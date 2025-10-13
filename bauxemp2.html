@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Baux - Agence Immobilière</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #f5f7fa;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            margin: 20px auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            position: relative;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .agency-logo {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+            padding: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h2 i {
+            color: var(--secondary);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-group input {
+            width: auto;
+        }
+
+        .checkbox-group label {
+            margin-bottom: 0;
+            font-weight: normal;
+        }
+
+        .checkbox-group.important {
+            background: #fff9e6;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid var(--warning);
+        }
+
+        .checkbox-group.validated {
+            background: #e8f6ef;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid var(--success);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary), #2980b9);
+            color: white;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #27ae60);
+            color: white;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-success:hover {
+            background: #219653;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #e67e22);
+            color: white;
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+        }
+
+        .btn-warning:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #c0392b);
+            color: white;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+            color: white;
+            box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3);
+        }
+
+        .btn-info:hover {
+            background: #138496;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(23, 162, 184, 0.4);
+        }
+
+        .results {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .result-value {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .ca-value {
+            color: var(--primary);
+        }
+
+        .reduction-value {
+            color: var(--danger);
+        }
+
+        .benefice-value {
+            color: var(--success);
+        }
+
+        .total-card {
+            background: linear-gradient(to right, var(--primary), #4a6491);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .total-card h2 {
+            color: white;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .total-result {
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        .instructions {
+            background: #e8f4fc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            border-left: 4px solid var(--secondary);
+            margin: 30px;
+        }
+
+        .instructions h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .instructions ul {
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: var(--gray);
+            font-size: 0.9rem;
+            border-top: 1px solid #ecf0f1;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .badge.success {
+            background: var(--success);
+            color: white;
+        }
+
+        .badge.warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .badge.danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .history-section {
+            margin-top: 30px;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .history-table th {
+            background: linear-gradient(135deg, var(--primary), #34495e);
+            color: white;
+            font-weight: bold;
+        }
+
+        .history-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .empty-history {
+            text-align: center;
+            padding: 30px;
+            color: var(--gray);
+            font-style: italic;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        .percentage-input {
+            position: relative;
+        }
+
+        .percentage-input input {
+            padding-right: 40px;
+        }
+
+        .percentage-symbol {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            font-weight: bold;
+        }
+
+        /* Style pour le lien de la maps */
+        .maps-link {
+            display: block;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border: 2px dashed #e1e8ed;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .maps-link:hover {
+            background: #f0f7ff;
+            border-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .maps-link i {
+            margin-right: 8px;
+            color: var(--secondary);
+        }
+
+        /* NOUVEAU: Sélecteur de semaine */
+        .week-selector {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .week-selector label {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+
+        .week-selector select {
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .week-info {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+        }
+
+        /* Modal pour l'aperçu du bail */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin: 0;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: var(--danger);
+        }
+
+        .preview-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .preview-section h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .preview-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .preview-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .preview-label {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .preview-value {
+            color: var(--dark);
+        }
+
+        @media (max-width: 1024px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .actions {
+                flex-direction: column;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .week-selector {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .week-selector select {
+                max-width: 100%;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                Retour
+            </a>
+            <div class="agency-logo">📑</div>
+            <h1>Gestion des Baux</h1>
+            <p>Créez et gérez les baux immobiliers, suivez les performances des employés</p>
+        </header>
+
+        <div class="dashboard">
+            <div class="card">
+                <h2><i class="fas fa-file-contract"></i> Saisie des Baux - Giacomo Pacini</h2>
+                
+                <div id="employe2" class="tab-content active">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="date2">Date de création du bail</label>
+                            <input type="date" id="date2">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="client2">Client / Locataire</label>
+                            <input type="text" id="client2" placeholder="Nom du client">
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="interieur2">Intérieur choisi</label>
+                            <input type="text" id="interieur2" placeholder="Description de l'intérieur">
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="rue2">Rue du bien</label>
+                            <input type="text" id="rue2" placeholder="Adresse du bien">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="garages2">Nombre de garages</label>
+                            <select id="garages2">
+                                <option value="0">0</option>
+                                <option value="2">2</option>
+                                <option value="4">4</option>
+                                <option value="6">6</option>
+                                <option value="12">12</option>
+                                <option value="24">24</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="reduction2">Réduction (%)</label>
+                            <div class="percentage-input">
+                                <input type="number" id="reduction2" min="0" max="100" step="0.1" placeholder="0" value="0">
+                                <span class="percentage-symbol">%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="ca2">Chiffre d'Affaires ($)</label>
+                            <input type="number" id="ca2" min="0" step="0.01" placeholder="Montant du CA">
+                        </div>
+                        
+                        <!-- REMPLACEMENT: Lien pour ajouter l'image de la maps -->
+                        <div class="form-group full-width">
+                            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdSFW3gV-wgrCzvfjVl3GO1CdW0LMAXaj2m93JNBOWgN190zQ/viewform?usp=dialog" target="_blank" class="maps-link">
+                                <i class="fas fa-map-marked-alt"></i>
+                                Pour ajouter l'image de la maps c'est ici
+                            </a>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <div class="checkbox-group important">
+                                <input type="checkbox" id="resilie2">
+                                <label for="resilie2">Bail résilié</label>
+                            </div>
+                            
+                            <div class="checkbox-group validated">
+                                <input type="checkbox" id="valide2">
+                                <label for="valide2">Validé par le patron</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="actions">
+                        <button class="btn btn-primary" onclick="enregistrerBail(2)">
+                            <i class="fas fa-save"></i> Enregistrer le bail
+                        </button>
+                        <button class="btn btn-success" onclick="calculerBenefice(2)">
+                            <i class="fas fa-calculator"></i> Calculer
+                        </button>
+                        <button class="btn btn-warning" onclick="reinitialiserFormulaire(2)">
+                            <i class="fas fa-redo"></i> Nouveau
+                        </button>
+                        <!-- AJOUT: Bouton de débogage -->
+                        <button class="btn btn-info" onclick="debugSemaines()" title="Déboguer les semaines">
+                            <i class="fas fa-bug"></i> Déboguer
+                        </button>
+                    </div>
+                    
+                    <div class="results">
+                        <h3>Résultats de Giacomo Pacini</h3>
+                        <div class="result-item">
+                            <span>Chiffre d'Affaires:</span>
+                            <span id="ca-result2" class="result-value ca-value">0 $</span>
+                        </div>
+                        <div class="result-item">
+                            <span>Réduction:</span>
+                            <span id="reduction-result2" class="result-value reduction-value">0 $ (0%)</span>
+                        </div>
+                        <div class="result-item">
+                            <span>Bénéfice:</span>
+                            <span id="benefice2" class="result-value benefice-value">0 $</span>
+                        </div>
+                        <div class="result-item">
+                            <span>Statut:</span>
+                            <span id="statut2" class="badge warning">En cours</span>
+                        </div>
+                    </div>
+                    
+                    <div class="history-section">
+                        <h3><i class="fas fa-history"></i> Historique des baux</h3>
+                        <div id="history2">
+                            <div class="empty-history">Aucun bail enregistré pour le moment</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card total-card">
+                <h2><i class="fas fa-chart-bar"></i> Tableau de Bord Global</h2>
+                
+                <!-- NOUVEAU: Sélecteur de semaine -->
+                <div class="week-selector">
+                    <label for="week-select"><i class="fas fa-calendar-week"></i> Sélectionner une semaine:</label>
+                    <select id="week-select">
+                        <!-- Les options seront générées dynamiquement -->
+                    </select>
+                </div>
+                <div class="week-info" id="week-info">
+                    <!-- Les informations de la semaine seront affichées ici -->
+                </div>
+                
+                <div class="result-item">
+                    <span>CA Total:</span>
+                    <span id="total-ca" class="result-value">0 $</span>
+                </div>
+                <div class="result-item">
+                    <span>Réductions Total:</span>
+                    <span id="total-reduction" class="result-value">0 $</span>
+                </div>
+                <div class="result-item">
+                    <span>Bénéfice Total:</span>
+                    <span id="total-benefice" class="result-value">0 $</span>
+                </div>
+                <div class="result-item">
+                    <span>Baux validés:</span>
+                    <span id="baux-valides" class="result-value">0</span>
+                </div>
+                <div class="result-item">
+                    <span>Baux résiliés:</span>
+                    <span id="baux-resilies" class="result-value">0</span>
+                </div>
+                <div class="result-item">
+                    <span>Total baux créés:</span>
+                    <span id="total-baux" class="result-value">0</span>
+                </div>
+                <div class="total-result" id="performance-indicator">
+                    Performance: En attente de données
+                </div>
+                
+                <div style="margin-top: 25px;">
+                    <h3><i class="fas fa-calendar-alt"></i> Baux par jour</h3>
+                    <div id="baux-par-jour">
+                        <div style="text-align: center; padding: 15px; color: rgba(255,255,255,0.7);">
+                            Aucune donnée disponible
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3><i class="fas fa-info-circle"></i> Instructions d'utilisation</h3>
+            <ul>
+                <li>Renseignez tous les détails du bail et cliquez sur "Enregistrer le bail"</li>
+                <li>Pour modifier un bail existant, cliquez sur "Modifier" dans l'historique</li>
+                <li>Si un client vous appelle et qu'il veut résilier le bail, veuillez modifier votre bail et le renseigner</li>
+                <li>Attention : Seul le patron a le droit de valider le bail !</li>
+                <li>Et si vous avez besoin d'information pour les rues, voici le lien : <a href="https://gtamap.xyz/" target="_blank" style="color: var(--secondary);">https://gtamap.xyz/</a></li>
+                <li><strong>Nouveau :</strong> Cliquez sur l'icône œil dans l'historique pour visualiser un aperçu du bail</li>
+                <li><strong>NOUVEAU : Sélection de semaine</strong> - Utilisez le sélecteur de semaine dans le tableau de bord pour voir les données d'une semaine spécifique</li>
+                <li><strong>NOUVEAU : Synchronisation en temps réel</strong> - Toutes vos données sont automatiquement synchronisées entre tous vos appareils via l'API</li>
+                <li><strong>Pour ajouter l'image de la maps, cliquez sur le lien dans le formulaire</strong></li>
+                <li><strong>DÉBOGAGE :</strong> Utilisez le bouton "Déboguer" pour vérifier le calcul des semaines</li>
+            </ul>
+        </div>
+
+        <footer>
+            <p>Système de Gestion des Baux Immobiliers - Agence Immobilière</p>
+            <p>Dernière mise à jour: <span id="current-date"></span></p>
+        </footer>
+    </div>
+
+    <div id="previewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Aperçu du Bail</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div id="previewContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Stockage des données
+        let bauxData = {
+            employe2: []
+        };
+
+        // Variable pour suivre le bail en cours d'édition
+        let bailEnEdition = null;
+
+        // Variable pour la semaine sélectionnée
+        let semaineSelectionnee = null;
+
+        // ====================================================================
+        // FONCTIONS POUR L'API (SYSTÈME DE SAUVEGARDE CLOUD)
+        // ====================================================================
+
+        // SAUVEGARDER sur le serveur (API)
+        async function sauvegarderDonnees() {
+            try {
+                const donneesPourSauvegarde = {
+                    bauxData: bauxData
+                };
+
+                const response = await fetch('/api/baux', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(donneesPourSauvegarde)
+                });
+                
+                if (response.ok) {
+                    console.log('✅ Données sauvegardées sur le serveur');
+                    showNotification('✅ Données sauvegardées !');
+                    return true;
+                } else {
+                    throw new Error('Erreur serveur');
+                }
+            } catch (error) {
+                console.error('❌ Erreur sauvegarde API:', error);
+                // Fallback: sauvegarde locale
+                sauvegarderLocalement();
+                showNotification('⚠️ Mode hors ligne - données locales sauvegardées');
+                return false;
+            }
+        }
+
+        // CHARGER depuis le serveur (API)
+        async function chargerDonnees() {
+            try {
+                const response = await fetch('/api/baux');
+                if (!response.ok) {
+                    throw new Error('Erreur serveur');
+                }
+                
+                const donneesServeur = await response.json();
+                if (donneesServeur && donneesServeur.bauxData) {
+                    bauxData = donneesServeur.bauxData;
+                    console.log('✅ Données chargées depuis le serveur');
+                    
+                    // Mettre à jour l'affichage
+                    afficherHistorique(2);
+                    
+                    // Mettre à jour les totaux
+                    calculerTotaux();
+                    
+                    // Mettre à jour les options de semaine
+                    genererOptionsSemaine();
+                    
+                    showNotification('✅ Données à jour');
+                    return true;
+                }
+            } catch (error) {
+                console.error('❌ Erreur chargement API:', error);
+                // Fallback: charger depuis le stockage local
+                if (chargerLocalement()) {
+                    showNotification('⚠️ Mode hors ligne - données locales chargées');
+                } else {
+                    showNotification('ℹ️ Aucune donnée trouvée - commencez par créer un bail');
+                }
+            }
+            return false;
+        }
+
+        // Sauvegarde locale de secours
+        function sauvegarderLocalement() {
+            try {
+                localStorage.setItem('bauxData', JSON.stringify(bauxData));
+                console.log('📱 Données sauvegardées localement');
+                return true;
+            } catch (error) {
+                console.error('❌ Erreur sauvegarde locale:', error);
+                return false;
+            }
+        }
+
+        // Chargement local de secours
+        function chargerLocalement() {
+            try {
+                const bauxSauvegardes = localStorage.getItem('bauxData');
+                if (bauxSauvegardes) {
+                    bauxData = JSON.parse(bauxSauvegardes);
+                }
+                
+                console.log('📱 Données chargées localement');
+                return true;
+            } catch (error) {
+                console.error('❌ Erreur chargement local:', error);
+                return false;
+            }
+        }
+
+        // Notification stylée
+        function showNotification(message) {
+            document.querySelectorAll('.custom-notification').forEach(n => n.remove());
+            
+            const notification = document.createElement('div');
+            notification.className = 'custom-notification';
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${message.includes('✅') ? '#2ecc71' : 
+                            message.includes('❌') ? '#e74c3c' : 
+                            message.includes('⚠️') ? '#f39c12' : 
+                            message.includes('📤') ? '#3498db' : '#3498db'};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                z-index: 10000;
+                font-weight: bold;
+                max-width: 300px;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // ====================================================================
+        // NOUVELLE SOLUTION SIMPLE POUR LES SEMAINES (DIMANCHE-SAMEDI)
+        // ====================================================================
+
+        // Définition manuelle des semaines pour 2025 (dimanche-samedi)
+        const semaines2025 = [
+            { numero: 40, debut: '2025-09-28', fin: '2025-10-04', nom: 'Semaine 40 (28/09 dim - 04/10 sam)' },
+            { numero: 41, debut: '2025-10-05', fin: '2025-10-11', nom: 'Semaine 41 (05/10 dim - 11/10 sam)' },
+            { numero: 42, debut: '2025-10-12', fin: '2025-10-18', nom: 'Semaine 42 (12/10 dim - 18/10 sam)' },
+            { numero: 43, debut: '2025-10-19', fin: '2025-10-25', nom: 'Semaine 43 (19/10 dim - 25/10 sam)' },
+            { numero: 44, debut: '2025-10-26', fin: '2025-11-01', nom: 'Semaine 44 (26/10 dim - 01/11 sam)' },
+            { numero: 45, debut: '2025-11-02', fin: '2025-11-08', nom: 'Semaine 45 (02/11 dim - 08/11 sam)' },
+            { numero: 46, debut: '2025-11-09', fin: '2025-11-15', nom: 'Semaine 46 (09/11 dim - 15/11 sam)' },
+            { numero: 47, debut: '2025-11-16', fin: '2025-11-22', nom: 'Semaine 47 (16/11 dim - 22/11 sam)' },
+            { numero: 48, debut: '2025-11-23', fin: '2025-11-29', nom: 'Semaine 48 (23/11 dim - 29/11 sam)' },
+            { numero: 49, debut: '2025-11-30', fin: '2025-12-06', nom: 'Semaine 49 (30/11 dim - 06/12 sam)' },
+            { numero: 50, debut: '2025-12-07', fin: '2025-12-13', nom: 'Semaine 50 (07/12 dim - 13/12 sam)' },
+            { numero: 51, debut: '2025-12-14', fin: '2025-12-20', nom: 'Semaine 51 (14/12 dim - 20/12 sam)' },
+            { numero: 52, debut: '2025-12-21', fin: '2025-12-27', nom: 'Semaine 52 (21/12 dim - 27/12 sam)' }
+        ];
+
+        // Trouver la semaine d'une date
+        function trouverSemaineParDate(date) {
+            const dateObj = new Date(date);
+            
+            for (let semaine of semaines2025) {
+                const debut = new Date(semaine.debut);
+                const fin = new Date(semaine.fin);
+                fin.setHours(23, 59, 59, 999); // Inclure toute la journée du samedi
+                
+                if (dateObj >= debut && dateObj <= fin) {
+                    return semaine;
+                }
+            }
+            
+            // Si pas trouvé, créer une nouvelle semaine automatiquement
+            return creerNouvelleSemaine(dateObj);
+        }
+
+        // Créer une nouvelle semaine automatiquement
+        function creerNouvelleSemaine(date) {
+            // Trouver la dernière semaine existante
+            const dernierNumero = Math.max(...semaines2025.map(s => s.numero));
+            const derniereSemaine = semaines2025.find(s => s.numero === dernierNumero);
+            
+            if (!derniereSemaine) return null;
+            
+            // Calculer la nouvelle semaine (7 jours après la fin de la dernière)
+            const finDerniere = new Date(derniereSemaine.fin);
+            const nouveauDebut = new Date(finDerniere);
+            nouveauDebut.setDate(finDerniere.getDate() + 1); // Jour suivant
+            
+            const nouvelleFin = new Date(nouveauDebut);
+            nouvelleFin.setDate(nouveauDebut.getDate() + 6); // +6 jours pour samedi
+            
+            const nouvelleSemaine = {
+                numero: dernierNumero + 1,
+                debut: nouveauDebut.toISOString().split('T')[0],
+                fin: nouvelleFin.toISOString().split('T')[0],
+                nom: `Semaine ${dernierNumero + 1} (${nouveauDebut.toLocaleDateString('fr-FR')} dim - ${nouvelleFin.toLocaleDateString('fr-FR')} sam)`
+            };
+            
+            semaines2025.push(nouvelleSemaine);
+            console.log('Nouvelle semaine créée:', nouvelleSemaine);
+            
+            return nouvelleSemaine;
+        }
+
+        // Générer les options de semaine
+        function genererOptionsSemaine() {
+            const select = document.getElementById('week-select');
+            select.innerHTML = '';
+            
+            // Option pour toutes les semaines
+            const optionToutes = document.createElement('option');
+            optionToutes.value = 'all';
+            optionToutes.textContent = 'Toutes les semaines';
+            select.appendChild(optionToutes);
+            
+            // Récupérer toutes les dates des baux pour savoir quelles semaines afficher
+            const datesBaux = [];
+            const employeKey = 'employe2';
+            bauxData[employeKey].forEach(bail => {
+                datesBaux.push(new Date(bail.date));
+            });
+            
+            // Ajouter la date d'aujourd'hui pour s'assurer d'avoir la semaine actuelle
+            datesBaux.push(new Date());
+            
+            // Trouver les semaines utilisées
+            const semainesUtilisees = new Set();
+            datesBaux.forEach(date => {
+                const semaine = trouverSemaineParDate(date);
+                if (semaine) {
+                    semainesUtilisees.add(semaine.numero);
+                }
+            });
+            
+            // Ajouter les options dans l'ordre décroissant
+            const semainesAffichees = semaines2025
+                .filter(s => semainesUtilisees.has(s.numero))
+                .sort((a, b) => b.numero - a.numero);
+            
+            semainesAffichees.forEach(semaine => {
+                const option = document.createElement('option');
+                option.value = `2025-${semaine.numero}`;
+                option.textContent = semaine.nom;
+                select.appendChild(option);
+            });
+            
+            // Sélectionner la semaine la plus récente par défaut
+            if (semainesAffichees.length > 0) {
+                semaineSelectionnee = `2025-${semainesAffichees[0].numero}`;
+                select.value = semaineSelectionnee;
+            }
+            
+            console.log('Semaines affichées:', semainesAffichees);
+        }
+
+        // Filtrer les baux par semaine sélectionnée
+        function filtrerBauxParSemaine() {
+            if (!semaineSelectionnee || semaineSelectionnee === 'all') {
+                return {
+                    employe2: bauxData.employe2
+                };
+            }
+            
+            const semaineNumero = parseInt(semaineSelectionnee.split('-')[1]);
+            const semaine = semaines2025.find(s => s.numero === semaineNumero);
+            
+            if (!semaine) {
+                return {
+                    employe2: bauxData.employe2
+                };
+            }
+            
+            const debut = new Date(semaine.debut);
+            const fin = new Date(semaine.fin);
+            fin.setHours(23, 59, 59, 999); // Inclure toute la journée du samedi
+            
+            const bauxFiltres = {
+                employe2: []
+            };
+            
+            const employeKey = 'employe2';
+            bauxFiltres[employeKey] = bauxData[employeKey].filter(bail => {
+                const dateBail = new Date(bail.date);
+                return dateBail >= debut && dateBail <= fin;
+            });
+            
+            console.log(`Filtrage semaine ${semaineNumero}:`, {
+                debut: debut.toLocaleDateString('fr-FR'),
+                fin: fin.toLocaleDateString('fr-FR'),
+                bauxTrouves: bauxFiltres[employeKey].length
+            });
+            
+            return bauxFiltres;
+        }
+
+        // Mettre à jour les informations de la semaine
+        function mettreAJourInfoSemaine() {
+            const infoElement = document.getElementById('week-info');
+            
+            if (!semaineSelectionnee || semaineSelectionnee === 'all') {
+                infoElement.textContent = 'Affichage de tous les baux (toutes les semaines)';
+                return;
+            }
+            
+            const semaineNumero = parseInt(semaineSelectionnee.split('-')[1]);
+            const semaine = semaines2025.find(s => s.numero === semaineNumero);
+            
+            if (semaine) {
+                infoElement.textContent = `Semaine ${semaine.numero}: ${new Date(semaine.debut).toLocaleDateString('fr-FR')} (dim) - ${new Date(semaine.fin).toLocaleDateString('fr-FR')} (sam)`;
+            }
+        }
+
+        // ====================================================================
+        // FONCTION DE DÉBOGAGE
+        // ====================================================================
+
+        function debugSemaines() {
+            console.log('=== DÉBOGAGE SEMAINES ===');
+            
+            const dateTest = new Date('2025-10-12');
+            const semaineTrouvee = trouverSemaineParDate(dateTest);
+            
+            console.log('Date test (12/10/25):', dateTest.toLocaleDateString('fr-FR'));
+            console.log('Semaine trouvée:', semaineTrouvee);
+            
+            console.log('Toutes les semaines disponibles:', semaines2025);
+            
+            // Regénérer les options
+            genererOptionsSemaine();
+            
+            alert(`Débogage terminé!\nLe 12/10/2025 est dans la semaine: ${semaineTrouvee ? semaineTrouvee.nom : 'Non trouvée'}`);
+        }
+
+        // ====================================================================
+        // FONCTIONS ORIGINALES POUR LA GESTION DES BAUX
+        // ====================================================================
+
+        // Fonction pour formater la date
+        function formaterDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('fr-FR');
+        }
+
+        // Fonction pour calculer le montant de réduction à partir du pourcentage
+        function calculerMontantReduction(ca, pourcentage) {
+            return (ca * pourcentage) / 100;
+        }
+
+        // Fonction pour afficher l'aperçu d'un bail
+        function afficherApercuBail(employeNum, bailId) {
+            const employeKey = `employe${employeNum}`;
+            const bail = bauxData[employeKey].find(b => b.id === bailId);
+            
+            if (bail) {
+                const modal = document.getElementById('previewModal');
+                const previewContent = document.getElementById('previewContent');
+                
+                // Générer le contenu de l'aperçu
+                let html = `
+                    <div class="preview-section">
+                        <h3>Informations générales</h3>
+                        <div class="preview-row">
+                            <span class="preview-label">Date de création:</span>
+                            <span class="preview-value">${formaterDate(bail.date)}</span>
+                        </div>
+                        <div class="preview-row">
+                            <span class="preview-label">Client / Locataire:</span>
+                            <span class="preview-value">${bail.client}</span>
+                        </div>
+                        <div class="preview-row">
+                            <span class="preview-label">Intérieur choisi:</span>
+                            <span class="preview-value">${bail.interieur}</span>
+                        </div>
+                        <div class="preview-row">
+                            <span class="preview-label">Rue du bien:</span>
+                            <span class="preview-value">${bail.rue}</span>
+                        </div>
+                        <div class="preview-row">
+                            <span class="preview-label">Nombre de garages:</span>
+                            <span class="preview-value">${bail.garages}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="preview-section">
+                        <h3>Informations financières</h3>
+                        <div class="preview-row">
+                            <span class="preview-label">Chiffre d'Affaires:</span>
+                            <span class="preview-value">${bail.ca.toFixed(2)} $</span>
+                        </div>
+                        <div class="preview-row">
+                            <span class="preview-label">Réduction:</span>
+                            <span class="preview-value">${bail.reductionPourcentage.toFixed(1)}% (${bail.reductionMontant.toFixed(2)} $)</span>
+                        </div>
+                        <div class="preview-row">
+                            <span class="preview-label">Bénéfice:</span>
+                            <span class="preview-value">${bail.benefice.toFixed(2)} $</span>
+                        </div>
+                    </div>
+                `;
+                
+                html += `
+                    <div class="preview-section">
+                        <h3>Statut du bail</h3>
+                        <div class="preview-row">
+                            <span class="preview-label">Validé par le patron:</span>
+                            <span class="preview-value">${bail.valide ? 'Oui' : 'Non'}</span>
+                        </div>
+                        <div class="preview-row">
+                            <span class="preview-label">Bail résilié:</span>
+                            <span class="preview-value">${bail.resilie ? 'Oui' : 'Non'}</span>
+                        </div>
+                        <div class="preview-row">
+                            <span class="preview-label">Statut:</span>
+                            <span class="preview-value">${bail.statut}</span>
+                        </div>
+                    </div>
+                `;
+                
+                previewContent.innerHTML = html;
+                modal.style.display = 'flex';
+            }
+        }
+
+        // Fonction pour enregistrer ou mettre à jour un bail
+        async function enregistrerBail(employeNum) {
+            const employeKey = `employe${employeNum}`;
+            const formElements = {
+                date: document.getElementById(`date${employeNum}`),
+                client: document.getElementById(`client${employeNum}`),
+                interieur: document.getElementById(`interieur${employeNum}`),
+                rue: document.getElementById(`rue${employeNum}`),
+                garages: document.getElementById(`garages${employeNum}`),
+                ca: document.getElementById(`ca${employeNum}`),
+                reductionPourcentage: document.getElementById(`reduction${employeNum}`),
+                resilie: document.getElementById(`resilie${employeNum}`),
+                valide: document.getElementById(`valide${employeNum}`)
+            };
+
+            const date = formElements.date.value;
+            const client = formElements.client.value;
+            const interieur = formElements.interieur.value;
+            const rue = formElements.rue.value;
+            const garages = formElements.garages.value;
+            const ca = parseFloat(formElements.ca.value) || 0;
+            const reductionPourcentage = parseFloat(formElements.reductionPourcentage.value) || 0;
+            const reductionMontant = calculerMontantReduction(ca, reductionPourcentage);
+            const resilie = formElements.resilie.checked;
+            const valide = formElements.valide.checked;
+            
+            // Validation des champs obligatoires
+            if (!date || !client || !interieur || !rue) {
+                alert('Veuillez remplir tous les champs obligatoires');
+                return;
+            }
+
+            let bailId;
+            let isNew = !bailEnEdition;
+
+            if (bailEnEdition) {
+                // Mise à jour d'un bail existant
+                bailId = bailEnEdition.id;
+                const index = bauxData[employeKey].findIndex(b => b.id === bailId);
+
+                if (index !== -1) {
+                    bauxData[employeKey][index] = {
+                        ...bauxData[employeKey][index],
+                        date: date,
+                        client: client,
+                        interieur: interieur,
+                        rue: rue,
+                        garages: parseInt(garages),
+                        ca: ca,
+                        reductionPourcentage: reductionPourcentage,
+                        reductionMontant: reductionMontant,
+                        benefice: ca - reductionMontant,
+                        resilie: resilie,
+                        valide: valide,
+                        statut: resilie ? 'Résilié' : (valide ? 'Validé' : 'En cours')
+                    };
+                    
+                    alert('Bail mis à jour avec succès !');
+                }
+                
+            } else {
+                // Création d'un nouveau bail
+                bailId = Date.now(); // Nouvel ID
+                const bail = {
+                    id: bailId,
+                    date: date,
+                    client: client,
+                    interieur: interieur,
+                    rue: rue,
+                    garages: parseInt(garages),
+                    ca: ca,
+                    reductionPourcentage: reductionPourcentage,
+                    reductionMontant: reductionMontant,
+                    benefice: ca - reductionMontant,
+                    resilie: resilie,
+                    valide: valide,
+                    statut: resilie ? 'Résilié' : (valide ? 'Validé' : 'En cours')
+                };
+                
+                // Ajout au tableau des baux
+                bauxData[employeKey].push(bail);
+
+                alert('Bail enregistré avec succès !');
+            }
+            
+            // Mise à jour de l'historique
+            afficherHistorique(employeNum);
+            
+            // Mise à jour des options de semaine (IMPORTANT: après l'ajout du bail)
+            genererOptionsSemaine();
+            
+            // Mise à jour des totaux
+            calculerTotaux();
+            
+            // Sauvegarder les données via l'API
+            const sauvegardeReussie = await sauvegarderDonnees();
+            if (sauvegardeReussie) {
+                // Ne rien faire de plus, le message de succès est déjà affiché dans sauvegarderDonnees()
+            }
+            
+            // Réinitialisation du formulaire pour une nouvelle entrée
+            reinitialiserFormulaire(employeNum);
+        }
+
+        // Fonction pour modifier un bail
+        function modifierBail(employeNum, bailId) {
+            const employeKey = `employe${employeNum}`;
+            const bail = bauxData[employeKey].find(b => b.id === bailId);
+            
+            if (bail) {
+                // Mettre à jour bailEnEdition
+                bailEnEdition = bail;
+
+                // Remplir le formulaire avec les données du bail
+                document.getElementById(`date${employeNum}`).value = bail.date;
+                document.getElementById(`client${employeNum}`).value = bail.client;
+                document.getElementById(`interieur${employeNum}`).value = bail.interieur;
+                document.getElementById(`rue${employeNum}`).value = bail.rue;
+                document.getElementById(`garages${employeNum}`).value = bail.garages;
+                document.getElementById(`ca${employeNum}`).value = bail.ca;
+                document.getElementById(`reduction${employeNum}`).value = bail.reductionPourcentage;
+                document.getElementById(`resilie${employeNum}`).checked = bail.resilie;
+                document.getElementById(`valide${employeNum}`).checked = bail.valide;
+                
+                // Mettre à jour les résultats
+                calculerBenefice(employeNum);
+                
+                // Faire défiler vers le formulaire
+                document.querySelector(`#employe${employeNum} .form-grid`).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        // Fonction pour supprimer un bail
+        async function supprimerBail(employeNum, bailId) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce bail ?')) {
+                const employeKey = `employe${employeNum}`;
+                bauxData[employeKey] = bauxData[employeKey].filter(b => b.id !== bailId);
+                
+                // Mise à jour de l'historique
+                afficherHistorique(employeNum);
+                
+                // Mise à jour des options de semaine
+                genererOptionsSemaine();
+                
+                // Mise à jour des totaux
+                calculerTotaux();
+                
+                // Sauvegarder les données
+                await sauvegarderDonnees();
+                
+                alert('Bail supprimé avec succès !');
+            }
+        }
+
+        // Fonction pour afficher l'historique d'un employé
+        function afficherHistorique(employeNum) {
+            const employeKey = `employe${employeNum}`;
+            const historyElement = document.getElementById(`history${employeNum}`);
+            const baux = bauxData[employeKey];
+            
+            if (baux.length === 0) {
+                historyElement.innerHTML = '<div class="empty-history">Aucun bail enregistré pour le moment</div>';
+                return;
+            }
+            
+            let html = `
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Client</th>
+                            <th>Rue</th>
+                            <th>Garages</th>
+                            <th>CA</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            baux.forEach(bail => {
+                const badgeClass = bail.statut === 'Validé' ? 'success' : 
+                                 bail.statut === 'Résilié' ? 'danger' : 'warning';
+                
+                html += `
+                    <tr>
+                        <td>${formaterDate(bail.date)}</td>
+                        <td>${bail.client}</td>
+                        <td>${bail.rue}</td>
+                        <td>${bail.garages}</td>
+                        <td>${bail.ca.toFixed(2)} $</td>
+                        <td><span class="badge ${badgeClass}">${bail.statut}</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-info btn-small" onclick="afficherApercuBail(${employeNum}, ${bail.id})" title="Aperçu">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-warning btn-small" onclick="modifierBail(${employeNum}, ${bail.id})" title="Modifier">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-danger btn-small" onclick="supprimerBail(${employeNum}, ${bail.id})" title="Supprimer">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            historyElement.innerHTML = html;
+        }
+
+        // Fonction pour réinitialiser le formulaire
+        function reinitialiserFormulaire(employeNum) {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById(`date${employeNum}`).value = today; // Réinitialiser à la date du jour
+            document.getElementById(`client${employeNum}`).value = '';
+            document.getElementById(`interieur${employeNum}`).value = '';
+            document.getElementById(`rue${employeNum}`).value = '';
+            document.getElementById(`garages${employeNum}`).value = '0';
+            document.getElementById(`ca${employeNum}`).value = '';
+            document.getElementById(`reduction${employeNum}`).value = '0';
+            document.getElementById(`resilie${employeNum}`).checked = false;
+            document.getElementById(`valide${employeNum}`).checked = false;
+            
+            // Réinitialiser les résultats
+            document.getElementById(`ca-result${employeNum}`).textContent = '0 $';
+            document.getElementById(`reduction-result${employeNum}`).textContent = '0 $ (0%)';
+            document.getElementById(`benefice${employeNum}`).textContent = '0 $';
+            document.getElementById(`statut${employeNum}`).textContent = 'En cours';
+            document.getElementById(`statut${employeNum}`).className = 'badge warning';
+            
+            // Réinitialiser le bail en édition
+            bailEnEdition = null;
+        }
+
+        // Fonction pour calculer le bénéfice et mettre à jour le statut
+        function calculerBenefice(employeNum) {
+            const ca = parseFloat(document.getElementById(`ca${employeNum}`).value) || 0;
+            const reductionPourcentage = parseFloat(document.getElementById(`reduction${employeNum}`).value) || 0;
+            const reductionMontant = calculerMontantReduction(ca, reductionPourcentage);
+            const benefice = ca - reductionMontant;
+            
+            // Mise à jour des résultats
+            document.getElementById(`ca-result${employeNum}`).textContent = ca.toFixed(2) + ' $';
+            document.getElementById(`reduction-result${employeNum}`).textContent = reductionMontant.toFixed(2) + ' $ (' + reductionPourcentage.toFixed(1) + '%)';
+            document.getElementById(`benefice${employeNum}`).textContent = benefice.toFixed(2) + ' $';
+            
+            // Mise à jour du statut
+            const resilie = document.getElementById(`resilie${employeNum}`).checked;
+            const valide = document.getElementById(`valide${employeNum}`).checked;
+            const statutElement = document.getElementById(`statut${employeNum}`);
+            
+            if (resilie) {
+                statutElement.textContent = "Résilié";
+                statutElement.className = "badge danger";
+            } else if (valide) {
+                statutElement.textContent = "Validé";
+                statutElement.className = "badge success";
+            } else {
+                statutElement.textContent = "En cours";
+                statutElement.className = "badge warning";
+            }
+        }
+
+        // Fonction pour calculer les totaux de l'équipe
+        function calculerTotaux() {
+            const bauxFiltres = filtrerBauxParSemaine();
+            
+            let totalCA = 0;
+            let totalReduction = 0;
+            let totalBenefice = 0;
+            let bauxValides = 0;
+            let bauxResilies = 0;
+            let totalBaux = 0;
+            
+            // Calcul des totaux par employé
+            const employeKey = 'employe2';
+            bauxFiltres[employeKey].forEach(bail => {
+                totalCA += bail.ca;
+                totalReduction += bail.reductionMontant;
+                totalBenefice += bail.benefice;
+                totalBaux++;
+                
+                if (bail.valide) bauxValides++;
+                if (bail.resilie) bauxResilies++;
+            });
+            
+            // Mise à jour des totaux affichés
+            document.getElementById('total-ca').textContent = totalCA.toFixed(2) + ' $';
+            document.getElementById('total-reduction').textContent = totalReduction.toFixed(2) + ' $';
+            document.getElementById('total-benefice').textContent = totalBenefice.toFixed(2) + ' $';
+            document.getElementById('baux-valides').textContent = bauxValides;
+            document.getElementById('baux-resilies').textContent = bauxResilies;
+            document.getElementById('total-baux').textContent = totalBaux;
+            
+            // Calcul des baux par jour
+            afficherBauxParJour();
+            
+            // Indicateur de performance
+            const performanceIndicator = document.getElementById('performance-indicator');
+            if (totalCA === 0) {
+                performanceIndicator.textContent = "Performance: En attente de données";
+                performanceIndicator.style.color = "white"; // Couleur par défaut dans le card total
+            } else if (totalBenefice / totalCA > 0.8) {
+                performanceIndicator.textContent = "Performance: Excellente";
+                performanceIndicator.style.color = "#2ecc71";
+            } else if (totalBenefice / totalCA > 0.6) {
+                performanceIndicator.textContent = "Performance: Bonne";
+                performanceIndicator.style.color = "#f39c12";
+            } else {
+                performanceIndicator.textContent = "Performance: À améliorer";
+                performanceIndicator.style.color = "#e74c3c";
+            }
+        }
+
+        // Fonction pour afficher les baux par jour
+        function afficherBauxParJour() {
+            const bauxParJourElement = document.getElementById('baux-par-jour');
+            const bauxParJour = {};
+            
+            const bauxFiltres = filtrerBauxParSemaine();
+            
+            // Compter les baux par date
+            const employeKey = 'employe2';
+            bauxFiltres[employeKey].forEach(bail => {
+                if (!bauxParJour[bail.date]) {
+                    bauxParJour[bail.date] = 0;
+                }
+                bauxParJour[bail.date]++;
+            });
+            
+            if (Object.keys(bauxParJour).length === 0) {
+                bauxParJourElement.innerHTML = '<div style="text-align: center; padding: 15px; color: rgba(255,255,255,0.7);">Aucune donnée disponible</div>';
+                return;
+            }
+            
+            let html = '';
+            Object.keys(bauxParJour).sort().forEach(date => {
+                html += `
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 8px; background: rgba(255,255,255,0.1); border-radius: 5px;">
+                        <span>${formaterDate(date)}</span>
+                        <span style="font-weight: bold;">${bauxParJour[date]} baux</span>
+                    </div>
+                `;
+            });
+            
+            bauxParJourElement.innerHTML = html;
+        }
+
+        // Initialisation des écouteurs d'événements
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Charger les données sauvegardées via l'API
+            await chargerDonnees();
+            
+            // Définir la date d'aujourd'hui par défaut
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById(`date2`).value = today;
+            
+            // Écouteurs pour les champs de saisie
+            document.getElementById(`ca2`).addEventListener('input', () => calculerBenefice(2));
+            document.getElementById(`reduction2`).addEventListener('input', () => calculerBenefice(2));
+            document.getElementById(`resilie2`).addEventListener('change', () => calculerBenefice(2));
+            document.getElementById(`valide2`).addEventListener('change', () => calculerBenefice(2));
+            
+            // Gestion de la modal d'aperçu
+            const modal = document.getElementById('previewModal');
+            const closeModal = document.querySelector('.close-modal');
+            
+            closeModal.addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+            
+            window.addEventListener('click', (event) => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+            
+            // NOUVEAU: Écouteur pour le sélecteur de semaine
+            document.getElementById('week-select').addEventListener('change', function() {
+                semaineSelectionnee = this.value;
+                mettreAJourInfoSemaine();
+                calculerTotaux();
+            });
+            
+            // Initialiser les options de semaine
+            genererOptionsSemaine();
+            mettreAJourInfoSemaine();
+            
+            // Initialiser les totaux et l'historique
+            calculerTotaux();
+            afficherHistorique(2); // Afficher l'historique au chargement
+            
+            // Mettre à jour la date actuelle
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString('fr-FR');
+            
+            // Sauvegarder automatiquement toutes les 30 secondes
+            setInterval(sauvegarderDonnees, 30000);
+        });
+    </script>
+</body>
+</html>
