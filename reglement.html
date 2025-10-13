@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Règlement - Agence Immobilière</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --warning-color: #f39c12;
+            --success-color: #2ecc71;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--dark-color);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            margin: 20px auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            position: relative;
+        }
+        
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
+        }
+        
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .agency-logo {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .warning-banner {
+            background: linear-gradient(135deg, var(--warning-color), #e67e22);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
+        }
+        
+        .warning-banner h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .warning-banner p {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+        
+        .rules-section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .rules-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+        
+        .rule-card {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+            border-left: 5px solid var(--primary-color);
+        }
+        
+        .rule-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .rule-card.important {
+            border-left-color: var(--accent-color);
+        }
+        
+        .rule-card.warning {
+            border-left-color: var(--warning-color);
+        }
+        
+        .rule-card.success {
+            border-left-color: var(--success-color);
+        }
+        
+        .rule-card h3 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .rule-card p {
+            margin-bottom: 15px;
+        }
+        
+        .rule-card ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .rule-card li {
+            margin-bottom: 8px;
+        }
+        
+        .code-section {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .code {
+            font-size: 2rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin: 10px 0;
+            color: var(--warning-color);
+        }
+        
+        .links-section {
+            background-color: var(--light-color);
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .link-card {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+        
+        .link-card:hover {
+            transform: translateX(5px);
+        }
+        
+        .link-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+        
+        .link-content {
+            flex: 1;
+        }
+        
+        .link-content h3 {
+            color: var(--secondary-color);
+            margin-bottom: 5px;
+        }
+        
+        .link-content p {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .site-button {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .site-button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .sales-rules {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .role-card {
+            background-color: var(--light-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--primary-color);
+        }
+        
+        .role-card h3 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .role-card.manager {
+            border-left-color: var(--success-color);
+        }
+        
+        .role-card.patron {
+            border-left-color: var(--accent-color);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--dark-color);
+            opacity: 0.7;
+            border-top: 1px solid #ecf0f1;
+        }
+        
+        @media (max-width: 768px) {
+            .rules-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                fontSize: 2rem;
+            }
+            
+            .warning-banner h2 {
+                fontSize: 1.5rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                Retour
+            </a>
+            <div class="agency-logo">📋</div>
+            <h1>Règlement de l'Agence</h1>
+            <p>Directives et bonnes pratiques à respecter</p>
+        </header>
+        
+        <div class="content">
+            <div class="warning-banner">
+                <h2><i class="fas fa-exclamation-triangle"></i> Attention ! À lire attentivement !</h2>
+                <p>Notre métier doit être effectué à la perfection et je veillerai à cela !</p>
+                <p>Prenez le temps de faire les choses correctement, si vous avez des questions, n'hésitez pas.</p>
+                <p><strong>Tout travail bien effectué sera récompensé !</strong></p>
+            </div>
+            
+            <div class="rules-section">
+                <h2 class="section-title"><i class="fas fa-gavel"></i> Règles Générales</h2>
+                
+                <div class="rules-grid">
+                    <div class="rule-card important">
+                        <h3><i class="fas fa-handshake"></i> Respect des clients</h3>
+                        <p>Première règle importante et primordiale : le respect de nos clients. Je ne tolérerai aucun manque de respect envers un client ou un de ses supérieurs.</p>
+                        <p>Il en est de même entre salariés.</p>
+                    </div>
+                    
+                    <div class="rule-card">
+                        <h3><i class="fas fa-file-contract"></i> Baux aux normes</h3>
+                        <p>Veillez à ce que tous les baux que vous créez soient aux normes, c'est-à-dire que l'intérieur soit en corrélation avec son emplacement.</p>
+                    </div>
+                    
+                    <div class="rule-card warning">
+                        <h3><i class="fas fa-phone"></i> Clients bloqués</h3>
+                        <p>Si vous avez un client au téléphone qui vous dit qu'il est bloqué chez lui, c'est simplement parce qu'il n'a pas payé son loyer.</p>
+                        <p>Dans ce cas, prévenez-le de s'adresser directement au gouvernement.</p>
+                    </div>
+                    
+                    <div class="rule-card">
+                        <h3><i class="fas fa-key"></i> Accès aux propriétés</h3>
+                        <p>Si un client vous demande de rentrer sur sa propriété, vous ne pourrez pas : il n'y a que le client qui possède ses clés et nous n'avons pas de doubles.</p>
+                    </div>
+                    
+                    <div class="rule-card">
+                        <h3><i class="fas fa-lock"></i> Installation de serrures</h3>
+                        <p>Si un client vous demande si nous pouvons mettre des serrures sur les portails, oui, c'est possible de le faire.</p>
+                        <p>Cependant, il faudra faire la demande auprès du gouvernement pour que l'entreprise de serrurerie vienne sur place.</p>
+                    </div>
+                    
+                    <div class="rule-card">
+                        <h3><i class="fas fa-trash-alt"></i> Gestion des messages</h3>
+                        <p>À chaque fois qu'une position est envoyée sur la centrale et que vous avez traité la demande, veillez à bien supprimer le message afin que tout le monde puisse s'y retrouver.</p>
+                    </div>
+                    
+                    <div class="rule-card">
+                        <h3><i class="fas fa-car"></i> Véhicules de fonction</h3>
+                        <p>Les voitures de fonction mises à votre disposition sont neuves et bien entretenues. Veillez donc à ce qu'à chaque fois que vous les utilisez, elles reviennent intactes sur le parking de l'entreprise.</p>
+                    </div>
+                    
+                    <div class="rule-card important">
+                        <h3><i class="fas fa-shield-alt"></i> Sécurité personnelle</h3>
+                        <p>Si vous vous sentez en danger, veillez à prévenir un supérieur ou un de vos collègues afin qu'il ait l'information sur l'endroit où vous êtes.</p>
+                        <div class="code-section">
+                            <p>Le code d'urgence est :</p>
+                            <div class="code">9-3/4</div>
+                            <p>À utiliser en cas de situation critique</p>
+                        </div>
+                    </div>
+                    
+                    <div class="rule-card warning">
+                        <h3><i class="fas fa-percentage"></i> Réductions entreprises</h3>
+                        <p>Pensez bien à vérifier les contrats que nous avons avec certaines entreprises. Il est possible que leurs employés aient droit à des réductions sur les biens achetés.</p>
+                        <p><strong>Attention : pas pour la location !!!</strong></p>
+                    </div>
+                    
+                    <!-- Nouvelle règle ajoutée -->
+                    <div class="rule-card important">
+                        <h3><i class="fas fa-link"></i> Suivi quotidien de l'entreprise</h3>
+                        <p>Vous avez un lien dans la compta qui, à 21 h tous les soirs, sera opérationnel, il vous permettra d'accéder à "Détails location/achat" et "Gestion des baux", qui vous seront utiles tout au long de la soirée !</p>
+                        <p><strong>Attention :</strong> Je vous préviens que le lien qui sera actif chaque soir est le suivi global de l'entreprise qu'il faut tenir impérativement à jour et c'est celui-ci qui sera pris en compte pour le salaire de fin de semaine.</p>
+                        <p>Vous avez tout de même ce lien qui à toute heures vous permet d'intéragir avec (Cependant le suivi n'est pas fait, seul vous avez accès, aucune donné n'est partagé avec le reste de l'équipe) :</p>
+                        <a href="https://darkdsm.github.io/Tableau-de-bord-Dynasty-8-/" class="site-button" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> Tableau de bord personnel
+                        </a>
+                    </div>
+                    
+                    <!-- Nouvelle règle ajoutée -->
+                    <div class="rule-card warning">
+                        <h3><i class="fas fa-user-clock"></i> Fin de service obligatoire</h3>
+                        <p>Vous devez impérativement prendre une fin de service si vous n'êtes pas disponible pour ne pas induire le client en erreur.</p>
+                        <p>Cela pourrait nuire à notre image d'inactivité et je ne l'accepterai pas, donc attention si je vous vois inactif et en service !</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="links-section">
+                <h2 class="section-title"><i class="fas fa-link"></i> Outils et Ressources</h2>
+                
+                <div class="link-card">
+                    <div class="link-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div class="link-content">
+                        <h3>Site Internet Officiel</h3>
+                        <p>Accédez au site officiel de l'agence</p>
+                        <a href="https://flashland-wl---dinasty-8.webnode.fr/" class="site-button" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> Visiter le site
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="link-card">
+                    <div class="link-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="link-content">
+                        <h3>Gestion de la Comptabilité</h3>
+                        <p><strong>INTERDICTION</strong> de modifier ou d'ajouter une information dans l'onglet gestion des salaires sous peine d'une sanction sévère !</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sales-rules">
+                <h2 class="section-title"><i class="fas fa-chart-bar"></i> Règles de Gestion des Ventes</h2>
+                
+                <div class="role-card">
+                    <h3><i class="fas fa-user-graduate"></i> Stagiaire</h3>
+                    <ul>
+                        <li>Peut accompagner une vente, préparer les documents et faire visiter les biens.</li>
+                        <li>La signature finale doit obligatoirement être validée par un Employé ou supérieur.</li>
+                    </ul>
+                </div>
+                
+                <div class="role-card">
+                    <h3><i class="fas fa-user-tie"></i> Employé</h3>
+                    <ul>
+                        <li>Autorisé à conclure une vente simple (appartements, petites maisons …) en autonomie.</li>
+                        <li>Pour les biens plus importants (villas, Penthouse …), une validation est requise par un Manager ou Patron.</li>
+                    </ul>
+                </div>
+                
+                <div class="role-card manager">
+                    <h3><i class="fas fa-user-cog"></i> Manager</h3>
+                    <ul>
+                        <li>Peut vendre tous types de biens en autonomie.</li>
+                        <li>Supervise les stagiaires et employés.</li>
+                        <li>Valide les ventes nécessitant un accord supérieur.</li>
+                    </ul>
+                </div>
+                
+                <div class="role-card patron">
+                    <h3><i class="fas fa-crown"></i> Co-Patron / Patron</h3>
+                    <ul>
+                        <li>Dispose de tous les pouvoirs de vente.</li>
+                        <li>Peut négocier des gros contrats et gérer des deals spéciaux.</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <footer>
+                <p>Document interne - Règlement de l'agence immobilière</p>
+                <p>Dernière mise à jour: <span id="current-date"></span></p>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('fr-FR');
+    </script>
+</body>
+</html>
