@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails Location/Achat - Agence Immobilière</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --purchase-color: #9b59b6;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+            --success-color: #2ecc71;
+            --discount-color: #27ae60;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--dark-color);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            margin: 20px auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            position: relative;
+        }
+        
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
+        }
+        
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .agency-logo {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .tabs-container {
+            margin-bottom: 30px;
+        }
+        
+        .tabs {
+            display: flex;
+            background-color: white;
+            border-radius: 10px 10px 0 0;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            background-color: var(--light-color);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            color: var(--dark-color);
+        }
+        
+        .tab:hover {
+            background-color: #d5dbdb;
+        }
+        
+        .tab.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+            background-color: white;
+            padding: 0;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .image-container {
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .image-link {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 24px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        
+        .image-link:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .form-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+            padding: 30px;
+        }
+        
+        .form-section {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-section h2 {
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-color);
+        }
+        
+        .tax-section, .discount-section {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+        
+        .tax-grid, .discount-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .tax-input, .discount-input {
+            display: flex;
+            align-items: center;
+        }
+        
+        .tax-input input, .discount-input input {
+            flex: 1;
+            margin-right: 10px;
+        }
+        
+        .tax-input span, .discount-input span {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .discount-section {
+            border-top: 3px solid var(--discount-color);
+        }
+        
+        .discount-section h2 {
+            color: var(--discount-color);
+        }
+        
+        .results-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+            padding: 0 30px;
+        }
+        
+        .results-section {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .results-section.rental {
+            border-top: 5px solid var(--primary-color);
+        }
+        
+        .results-section.purchase {
+            border-top: 5px solid var(--purchase-color);
+        }
+        
+        .results-section h2 {
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-color);
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .result-card {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: 8px;
+            transition: transform 0.3s;
+        }
+        
+        .result-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .result-card h3 {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .purchase .result-value {
+            color: var(--purchase-color);
+        }
+        
+        .discount-card {
+            background-color: #e8f7ef;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--discount-color);
+        }
+        
+        .discount-card h3 {
+            color: var(--discount-color);
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        
+        .discount-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--discount-color);
+        }
+        
+        .weight-card {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .weight-card h3 {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        
+        .weight-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+        
+        .total-card {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .total-card h3 {
+            color: white;
+            margin-bottom: 10px;
+        }
+        
+        .total-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .info-text {
+            font-style: italic;
+            margin-top: 10px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            padding: 0 30px 30px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, var(--primary-color), #2980b9);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+        
+        .btn-secondary {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #d5dbdb;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: var(--dark-color);
+            font-size: 1.1rem;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--dark-color);
+            opacity: 0.7;
+            border-top: 1px solid #ecf0f1;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 1024px) {
+            .form-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .tax-grid, .discount-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .results-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                Retour
+            </a>
+            <div class="agency-logo">🏠</div>
+            <h1>Détails Location/Achat</h1>
+            <p>Calculez les coûts de location et d'achat avec taxes et options</p>
+        </header>
+        
+        <div class="content">
+            <p class="subtitle">Configurez les paramètres et calculez les coûts automatiquement</p>
+            
+            <div class="tabs-container">
+                <div class="tabs">
+                    <button class="tab active" data-tab="main">Calculatrice</button>
+                    <button class="tab" data-tab="endroit">Endroit convoitable</button>
+                    <button class="tab" data-tab="zone">Zone d'habitation</button>
+                </div>
+                
+                <div id="main-tab" class="tab-content active">
+                    <div class="form-container">
+                        <div class="form-section">
+                            <h2>Sélection des Options</h2>
+                            
+                            <div class="form-group">
+                                <label for="interior-type">Type d'intérieur</label>
+                                <select id="interior-type">
+                                    <option value="">Sélectionnez un type d'intérieur</option>
+                                    <!-- Les options seront ajoutées dynamiquement par JavaScript -->
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="zone">Zone</label>
+                                <select id="zone">
+                                    <option value="">Sélectionnez une zone</option>
+                                    <option value="Classe 1">Classe 1</option>
+                                    <option value="Classe 2">Classe 2</option>
+                                    <option value="Classe 3">Classe 3</option>
+                                    <option value="Classe 4">Classe 4</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="garage">Garage</label>
+                                <select id="garage">
+                                    <option value="">Sélectionnez un garage</option>
+                                    <option value="0 place">0 place</option>
+                                    <option value="2 place">2 place</option>
+                                    <option value="4 place">4 place</option>
+                                    <option value="6 place">6 place</option>
+                                    <option value="12 place">12 place</option>
+                                    <option value="24 place">24 place</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <h2>Configuration des Taxes</h2>
+                            
+                            <div class="tax-grid">
+                                <div class="form-group">
+                                    <div class="tax-input">
+                                        <input type="number" id="location-tax" min="0" max="100" value="0">
+                                        <span>% Taxe de location</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <div class="tax-input">
+                                        <input type="number" id="purchase-tax" min="0" max="100" value="0">
+                                        <span>% Taxe d'achat</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="info-text">
+                                Les calculs se mettent à jour automatiquement lorsque vous modifiez les options.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Nouvelle section Configuration des réductions -->
+                    <div class="discount-section">
+                        <h2>Configuration des Réductions</h2>
+                        
+                        <div class="discount-grid">
+                            <div class="form-group">
+                                <div class="discount-input">
+                                    <input type="number" id="location-discount" min="0" max="100" value="0">
+                                    <span>% Réduction de location</span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <div class="discount-input">
+                                    <input type="number" id="purchase-discount" min="0" max="100" value="0">
+                                    <span>% Réduction d'achat</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-text">
+                            Les réductions sont appliquées après le calcul des taxes.
+                        </div>
+                    </div>
+                    
+                    <div class="results-container">
+                        <div class="results-section rental">
+                            <h2>Résultats pour la Location</h2>
+                            <div class="results-grid">
+                                <div class="result-card">
+                                    <h3>Prix de Base</h3>
+                                    <div class="result-value" id="rental-base-price">$0</div>
+                                </div>
+                                
+                                <div class="result-card">
+                                    <h3>Taxe de Location</h3>
+                                    <div class="result-value" id="rental-tax-amount">$0</div>
+                                </div>
+                                
+                                <div class="discount-card">
+                                    <h3>Réduction de Location</h3>
+                                    <div class="discount-value" id="rental-discount-amount">$0</div>
+                                </div>
+                                
+                                <div class="weight-card">
+                                    <h3>Poids Maximum du Coffre</h3>
+                                    <div class="weight-value" id="max-weight">0 kg</div>
+                                </div>
+                                
+                                <div class="total-card">
+                                    <h3>Prix Final de Location</h3>
+                                    <div class="total-value" id="final-rental-price">$0</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="results-section purchase">
+                            <h2>Résultats pour l'Achat</h2>
+                            <div class="results-grid">
+                                <div class="result-card">
+                                    <h3>Prix du Coffre</h3>
+                                    <div class="result-value" id="purchase-coffre-price">$0</div>
+                                </div>
+                                
+                                <div class="result-card">
+                                    <h3>Prix du Garage</h3>
+                                    <div class="result-value" id="purchase-garage-price">$0</div>
+                                </div>
+                                
+                                <div class="result-card">
+                                    <h3>Prix de la Zone</h3>
+                                    <div class="result-value" id="purchase-zone-price">$0</div>
+                                </div>
+                                
+                                <div class="result-card">
+                                    <h3>Prix de la Catégorie</h3>
+                                    <div class="result-value" id="purchase-category-price">$0</div>
+                                </div>
+                                
+                                <div class="result-card">
+                                    <h3>Taxe d'Achat</h3>
+                                    <div class="result-value" id="purchase-tax-amount">$0</div>
+                                </div>
+                                
+                                <div class="discount-card">
+                                    <h3>Réduction d'Achat</h3>
+                                    <div class="discount-value" id="purchase-discount-amount">$0</div>
+                                </div>
+                                
+                                <div class="total-card">
+                                    <h3>Prix Final d'Achat</h3>
+                                    <div class="total-value" id="final-purchase-price">$0</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="actions">
+                        <button class="btn btn-secondary" id="reset-btn">Réinitialiser</button>
+                    </div>
+                </div>
+                
+                <div id="endroit-tab" class="tab-content">
+                    <div class="image-container">
+                        <h2>Endroits Convoitables</h2>
+                        <p>Les propriétés les plus recherchées par nos clients.</p>
+                        <img src="Endroitmaps.png" alt="Endroit convoitable">
+                        <p class="info-text">Carte des endroits les plus demandés - Mise à jour hebdomadaire</p>
+                    </div>
+                </div>
+                
+                <div id="zone-tab" class="tab-content">
+                    <div class="image-container">
+                        <h2>Zones d'Habitation</h2>
+                        <p>Carte des différentes zones résidentielles disponibles.</p>
+                        <img src="Zonemaps.jpg" alt="Zone d'habitation">
+                        <p class="info-text">Classification des zones par prestige et prix</p>
+                        <a href="https://gtamap.xyz" target="_blank" class="image-link">
+                            <i class="fas fa-external-link-alt"></i> Voir sur gtamap.xyz
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <footer>
+                <p>Interface de gestion des locations et achats - Agence Immobilière</p>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        // Données des prix basées sur les tables fournies
+        const zonePrices = {
+            "Classe 1": 300,
+            "Classe 2": 500,
+            "Classe 3": 750,
+            "Classe 4": 1000
+        };
+        
+        const categoryPrices = {
+            "A": 1500,
+            "B": 500,
+            "C": 250,
+            "D": 100,
+            "E": 1750,
+            "F": 1000000
+        };
+        
+        const garagePrices = {
+            "0 place": 0,
+            "2 place": 200,
+            "4 place": 400,
+            "6 place": 750,
+            "12 place": 1200,
+            "24 place": 4000
+        };
+        
+        // Prix fixe du coffre pour la location
+        const rentalCoffrePrice = 100;
+        
+        // Prix fixe du coffre pour l'achat
+        const purchaseCoffrePrice = 30000;
+        
+        // Données des intérieurs avec leur catégorie et poids maximum
+        const interiorData = [
+            { name: "Appartement Low Cost", category: "D", maxWeight: 200 },
+            { name: "Appartement Mid Cost", category: "C", maxWeight: 300 },
+            { name: "Appartement Moderne 1", category: "B", maxWeight: 350 },
+            { name: "Appartement Moderne 2", category: "B", maxWeight: 350 },
+            { name: "Appartement Moderne 3", category: "B", maxWeight: 400 },
+            { name: "Appartement Moderne 4", category: "B", maxWeight: 400 },
+            { name: "Appartement Moderne 5", category: "B", maxWeight: 400 },
+            { name: "Appartement Moderne 6", category: "B", maxWeight: 400 },
+            { name: "Appartement Moderne 7", category: "B", maxWeight: 400 },
+            { name: "Appartement Moderne 8", category: "B", maxWeight: 400 },
+            { name: "Appartement Moderne 9", category: "B", maxWeight: 400 },
+            { name: "Appartement Moderne 10", category: "B", maxWeight: 400 },
+            { name: "Appartement Moderne 11", category: "B", maxWeight: 450 },
+            { name: "Appartement Moderne 12", category: "B", maxWeight: 450 },
+            { name: "Appartement Moderne 13", category: "B", maxWeight: 450 },
+            { name: "Appartement Moderne 14", category: "B", maxWeight: 450 },
+            { name: "Appartement Moderne 15", category: "B", maxWeight: 450 },
+            { name: "Appartement Moderne 16", category: "B", maxWeight: 450 },
+            { name: "Appartement Moderne 17", category: "B", maxWeight: 500 },
+            { name: "Appartement Moderne 18", category: "B", maxWeight: 500 },
+            { name: "Appartement Moderne 19", category: "B", maxWeight: 500 },
+            { name: "Bureau Moderne 1", category: "B", maxWeight: 750 },
+            { name: "Bureau Moderne 2", category: "B", maxWeight: 750 },
+            { name: "Bureau Moderne 3", category: "B", maxWeight: 750 },
+            { name: "Bureau Moderne 4", category: "B", maxWeight: 750 },
+            { name: "Bureau Moderne 5", category: "A", maxWeight: 900 },
+            { name: "Bureau Moderne 6", category: "A", maxWeight: 900 },
+            { name: "Bureau Moderne 7", category: "A", maxWeight: 900 },
+            { name: "Bureau Moderne 8", category: "A", maxWeight: 900 },
+            { name: "Bureau Moderne 1", category: "D", maxWeight: 300 },
+            { name: "Garage Club 1", category: "E", maxWeight: 450 },
+            { name: "Garage Club 2", category: "E", maxWeight: 450 },
+            { name: "Bunker 1", category: "F", maxWeight: 30000 },
+            { name: "Diamond Casino Penthouse", category: "E", maxWeight: 500 },
+            { name: "Petit Entrepôt", category: "C", maxWeight: 1000 },
+            { name: "Moyen Entrepôt", category: "B", maxWeight: 1750 },
+            { name: "Grand Entrepôt", category: "A", maxWeight: 3000 },
+            { name: "Container Shell", category: "E", maxWeight: 250 },
+            { name: "Furnished Mid Appart Shell", category: "C", maxWeight: 300 },
+            { name: "Modern Hotel Shell", category: "E", maxWeight: 150 },
+            { name: "Frank Aunt Shell", category: "E", maxWeight: 250 },
+            { name: "Garage Modern Shell", category: "E", maxWeight: 300 },
+            { name: "Lester Shell", category: "B", maxWeight: 250 },
+            { name: "Michael Shell", category: "E", maxWeight: 350 },
+            { name: "Office Shell", category: "E", maxWeight: 250 },
+            { name: "Ranch Shell", category: "E", maxWeight: 400 },
+            { name: "Store Shell", category: "E", maxWeight: 300 },
+            { name: "Caravane Shell", category: "E", maxWeight: 100 },
+            { name: "Trevor Shell", category: "E", maxWeight: 200 },
+            { name: "Shell 10 Low", category: "E", maxWeight: 200 },
+            { name: "Shell 10 Mid", category: "E", maxWeight: 300 },
+            { name: "Motel Shell", category: "E", maxWeight: 200 },
+            { name: "T1 Unfurnished Shell", category: "E", maxWeight: 200 },
+            { name: "T1 Furnished Shell", category: "E", maxWeight: 200 },
+            { name: "T2 Unfurnished Shell", category: "E", maxWeight: 275 },
+            { name: "T2 Furnished Shell", category: "E", maxWeight: 275 },
+            { name: "T3 Unfurnished Shell", category: "E", maxWeight: 350 },
+            { name: "T3 Furnished Shell", category: "E", maxWeight: 350 },
+            { name: "Shell 01 Empty", category: "E", maxWeight: 200 },
+            { name: "Shell 01 Furnished", category: "E", maxWeight: 200 },
+            { name: "Shell 02 Empty", category: "E", maxWeight: 275 },
+            { name: "Shell 02 Furnished", category: "E", maxWeight: 275 },
+            { name: "Shell 03 Empty", category: "E", maxWeight: 300 },
+            { name: "Shell 03 Furnished", category: "E", maxWeight: 300 },
+            { name: "Shell 04", category: "E", maxWeight: 500 },
+            { name: "Shell 04 Furnished", category: "E", maxWeight: 500 }
+        ];
+        
+        // Éléments DOM
+        const interiorTypeSelect = document.getElementById('interior-type');
+        const zoneSelect = document.getElementById('zone');
+        const garageSelect = document.getElementById('garage');
+        const locationTaxInput = document.getElementById('location-tax');
+        const purchaseTaxInput = document.getElementById('purchase-tax');
+        const locationDiscountInput = document.getElementById('location-discount');
+        const purchaseDiscountInput = document.getElementById('purchase-discount');
+        
+        // Éléments de résultats pour la location
+        const rentalBasePriceElement = document.getElementById('rental-base-price');
+        const rentalTaxAmountElement = document.getElementById('rental-tax-amount');
+        const rentalDiscountAmountElement = document.getElementById('rental-discount-amount');
+        const finalRentalPriceElement = document.getElementById('final-rental-price');
+        
+        // Éléments de résultats pour l'achat
+        const purchaseCoffrePriceElement = document.getElementById('purchase-coffre-price');
+        const purchaseGaragePriceElement = document.getElementById('purchase-garage-price');
+        const purchaseZonePriceElement = document.getElementById('purchase-zone-price');
+        const purchaseCategoryPriceElement = document.getElementById('purchase-category-price');
+        const purchaseTaxAmountElement = document.getElementById('purchase-tax-amount');
+        const purchaseDiscountAmountElement = document.getElementById('purchase-discount-amount');
+        const finalPurchasePriceElement = document.getElementById('final-purchase-price');
+        
+        const maxWeightElement = document.getElementById('max-weight');
+        const resetButton = document.getElementById('reset-btn');
+        
+        // Gestion des onglets
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.getAttribute('data-tab');
+                
+                // Désactiver tous les onglets et contenus
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Activer l'onglet et le contenu sélectionnés
+                tab.classList.add('active');
+                document.getElementById(`${tabId}-tab`).classList.add('active');
+            });
+        });
+        
+        // Remplir la liste des types d'intérieur
+        function populateInteriorTypes() {
+            interiorData.forEach(interior => {
+                const option = document.createElement('option');
+                option.value = interior.name;
+                option.textContent = interior.name;
+                interiorTypeSelect.appendChild(option);
+            });
+        }
+        
+        // Fonction de calcul pour l'achat
+        function calculatePurchasePrice(garagePrice, zonePrice, categoryPrice) {
+            // Calcul du prix du garage pour l'achat
+            const garagePlacePrice = garagePrice * 300;
+            const purchaseGarageTotal = garagePlacePrice;
+            
+            // Calcul du prix de la zone pour l'achat
+            const zonePlacePrice = zonePrice * 300;
+            const purchaseZoneTotal = zonePlacePrice;
+            
+            // Calcul du prix de la catégorie pour l'achat
+            const categoryPlacePrice = categoryPrice * 300;
+            const purchaseCategoryTotal = categoryPlacePrice;
+            
+            return {
+                garage: purchaseGarageTotal,
+                zone: purchaseZoneTotal,
+                category: purchaseCategoryTotal
+            };
+        }
+        
+        // Fonction de calcul principal
+        function calculatePrices() {
+            const interiorType = interiorTypeSelect.value;
+            const zone = zoneSelect.value;
+            const garage = garageSelect.value;
+            const locationTaxRate = parseInt(locationTaxInput.value) || 0;
+            const purchaseTaxRate = parseInt(purchaseTaxInput.value) || 0;
+            const locationDiscountRate = parseInt(locationDiscountInput.value) || 0;
+            const purchaseDiscountRate = parseInt(purchaseDiscountInput.value) || 0;
+            
+            // Vérification que les sélections obligatoires sont faites
+            if (!interiorType || !zone || !garage) {
+                // Si une sélection est manquante, réinitialiser tous les résultats à 0
+                resetResults();
+                return;
+            }
+            
+            // Trouver les données de l'intérieur sélectionné
+            const selectedInterior = interiorData.find(item => item.name === interiorType);
+            if (!selectedInterior) {
+                resetResults();
+                return;
+            }
+            
+            // Récupération des prix de base
+            const zonePrice = zonePrices[zone] || 0;
+            const categoryPrice = categoryPrices[selectedInterior.category] || 0;
+            const garagePrice = garagePrices[garage] || 0;
+            
+            // CALCULS POUR LA LOCATION
+            // Prix de base = zone + catégorie + garage + coffre
+            const rentalBasePrice = zonePrice + categoryPrice + garagePrice + rentalCoffrePrice;
+            
+            // Calcul des taxes pour la location
+            const rentalTaxAmount = rentalBasePrice * (locationTaxRate / 100);
+            
+            // Prix après taxes
+            const rentalPriceAfterTax = rentalBasePrice + rentalTaxAmount;
+            
+            // Calcul de la réduction pour la location
+            const rentalDiscountAmount = rentalPriceAfterTax * (locationDiscountRate / 100);
+            
+            // Calcul du prix final pour la location
+            const finalRentalPrice = rentalPriceAfterTax - rentalDiscountAmount;
+            
+            // Mise à jour de l'affichage pour la location
+            rentalBasePriceElement.textContent = `$${rentalBasePrice.toFixed(0)}`;
+            rentalTaxAmountElement.textContent = `$${rentalTaxAmount.toFixed(0)}`;
+            rentalDiscountAmountElement.textContent = `-$${rentalDiscountAmount.toFixed(0)}`;
+            finalRentalPriceElement.textContent = `$${finalRentalPrice.toFixed(0)}`;
+            
+            // CALCULS POUR L'ACHAT
+            // Calcul des composants du prix d'achat
+            const purchasePrices = calculatePurchasePrice(garagePrice, zonePrice, categoryPrice);
+            
+            // Prix de base pour l'achat = coffre + garage + zone + catégorie
+            const purchaseBasePrice = purchaseCoffrePrice + purchasePrices.garage + purchasePrices.zone + purchasePrices.category;
+            
+            // Calcul des taxes pour l'achat
+            const purchaseTaxAmount = purchaseBasePrice * (purchaseTaxRate / 100);
+            
+            // Prix après taxes
+            const purchasePriceAfterTax = purchaseBasePrice + purchaseTaxAmount;
+            
+            // Calcul de la réduction pour l'achat
+            const purchaseDiscountAmount = purchasePriceAfterTax * (purchaseDiscountRate / 100);
+            
+            // Calcul du prix final pour l'achat
+            const finalPurchasePrice = purchasePriceAfterTax - purchaseDiscountAmount;
+            
+            // Mise à jour de l'affichage pour l'achat
+            purchaseCoffrePriceElement.textContent = `$${purchaseCoffrePrice.toFixed(0)}`;
+            purchaseGaragePriceElement.textContent = `$${purchasePrices.garage.toFixed(0)}`;
+            purchaseZonePriceElement.textContent = `$${purchasePrices.zone.toFixed(0)}`;
+            purchaseCategoryPriceElement.textContent = `$${purchasePrices.category.toFixed(0)}`;
+            purchaseTaxAmountElement.textContent = `$${purchaseTaxAmount.toFixed(0)}`;
+            purchaseDiscountAmountElement.textContent = `-$${purchaseDiscountAmount.toFixed(0)}`;
+            finalPurchasePriceElement.textContent = `$${finalPurchasePrice.toFixed(0)}`;
+            
+            // Affichage du poids maximum du coffre
+            maxWeightElement.textContent = `${selectedInterior.maxWeight} kg`;
+        }
+        
+        // Fonction pour réinitialiser les résultats à 0
+        function resetResults() {
+            rentalBasePriceElement.textContent = "$0";
+            rentalTaxAmountElement.textContent = "$0";
+            rentalDiscountAmountElement.textContent = "$0";
+            finalRentalPriceElement.textContent = "$0";
+            
+            purchaseCoffrePriceElement.textContent = "$0";
+            purchaseGaragePriceElement.textContent = "$0";
+            purchaseZonePriceElement.textContent = "$0";
+            purchaseCategoryPriceElement.textContent = "$0";
+            purchaseTaxAmountElement.textContent = "$0";
+            purchaseDiscountAmountElement.textContent = "$0";
+            finalPurchasePriceElement.textContent = "$0";
+            
+            maxWeightElement.textContent = "0 kg";
+        }
+        
+        // Fonction de réinitialisation complète
+        function resetForm() {
+            interiorTypeSelect.value = "";
+            zoneSelect.value = "";
+            garageSelect.value = "";
+            locationTaxInput.value = "0";
+            purchaseTaxInput.value = "0";
+            locationDiscountInput.value = "0";
+            purchaseDiscountInput.value = "0";
+            
+            resetResults();
+        }
+        
+        // Écouteurs d'événements pour le calcul automatique
+        interiorTypeSelect.addEventListener('change', calculatePrices);
+        zoneSelect.addEventListener('change', calculatePrices);
+        garageSelect.addEventListener('change', calculatePrices);
+        locationTaxInput.addEventListener('input', calculatePrices);
+        purchaseTaxInput.addEventListener('input', calculatePrices);
+        locationDiscountInput.addEventListener('input', calculatePrices);
+        purchaseDiscountInput.addEventListener('input', calculatePrices);
+        
+        resetButton.addEventListener('click', resetForm);
+        
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            populateInteriorTypes();
+            resetForm(); // Tout est réinitialisé à zéro au chargement
+        });
+    </script>
+</body>
+</html>
