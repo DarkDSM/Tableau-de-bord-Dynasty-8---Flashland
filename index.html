@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agence Immobilière - Accueil</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --light: #ecf0f1;
+            --dark: #34495e;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .welcome-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            text-align: center;
+            padding: 50px 30px;
+        }
+        
+        .agency-logo {
+            font-size: 5rem;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            margin-bottom: 40px;
+        }
+        
+        /* Layout principal côte à côte */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        /* Section Modules */
+        .modules-section {
+            text-align: left;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .module-card {
+            background: linear-gradient(135deg, var(--primary), #34495e);
+            color: white;
+            padding: 25px 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+            height: 100%;
+        }
+        
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .module-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .module-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .module-description {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+        
+        .module-card.disponibilites { background: linear-gradient(135deg, #1abc9c, #16a085); }
+        .module-card.salaires { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .module-card.location { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+        .module-card.portail { background: linear-gradient(135deg, #e67e22, #d35400); }
+        .module-card.grille { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .module-card.reglement { background: linear-gradient(135deg, #f39c12, #d35400); }
+        
+        /* Section Employés */
+        .employees-section {
+            text-align: left;
+        }
+        
+        .employees-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        
+        .employee-card {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .employee-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .employee-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .employee-description {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+        
+        .employee-card:nth-child(2) { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+        .employee-card:nth-child(3) { background: linear-gradient(135deg, #e67e22, #d35400); }
+        .employee-card:nth-child(4) { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .modules-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .welcome-card {
+                padding: 30px 15px;
+            }
+            
+            .agency-logo {
+                font-size: 3.5rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .module-card, .employee-card {
+                padding: 15px;
+            }
+            
+            .module-icon {
+                font-size: 2rem;
+            }
+            
+            .module-title, .employee-name {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="welcome-card">
+            <div class="agency-logo">🏢</div>
+            <h1>Agence Immobilière</h1>
+            <p class="subtitle">Tableau de Bord - Gestion du Dynasty 8</p>
+            
+            <div class="main-layout">
+                <!-- Section Modules (à gauche) -->
+                <div class="modules-section">
+                    <h2 class="section-title">MODULES DE GESTION</h2>
+                    <div class="modules-grid">
+                        <a href="disponibilites.html" class="module-card disponibilites">
+                            <div class="module-icon">📅</div>
+                            <div class="module-title">Disponibilités des Agents</div>
+                            <div class="module-description">
+                                Indiquez vos disponibilités
+                            </div>
+                        </a>
+                        
+                        <a href="salaires.html" class="module-card salaires">
+                            <div class="module-icon">💰</div>
+                            <div class="module-title">Gestion des Salaires</div>
+                            <div class="module-description">
+                                Gestion de la comptabilité, Attention : seul le patron a le droit de modifier.
+                            </div>
+                        </a>
+                        
+                        <a href="location.html" class="module-card location">
+                            <div class="module-icon">🏠</div>
+                            <div class="module-title">Détails Location/Achat</div>
+                            <div class="module-description">
+                                Calculez les coûts de location et d'achat avec taxes et options
+                            </div>
+                        </a>
+                        
+                        <a href="portail.html" class="module-card portail">
+                            <div class="module-icon">🔒</div>
+                            <div class="module-title">Gestion des Sérrures de Portails</div>
+                            <div class="module-description">
+                                Créez et gérez les demandes de sérrures pour les portails immobiliers
+                            </div>
+                        </a>
+                        
+                        <a href="grille.html" class="module-card grille">
+                            <div class="module-icon">📊</div>
+                            <div class="module-title">Grille des Salaires</div>
+                            <div class="module-description">
+                                Consultez la structure complète des salaires et responsabilités
+                            </div>
+                        </a>
+                        
+                        <a href="reglement.html" class="module-card reglement">
+                            <div class="module-icon">📋</div>
+                            <div class="module-title">Règlement de l'Agence</div>
+                            <div class="module-description">
+                                Directives et bonnes pratiques à respecter dans l'agence
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Section Employés (à droite) -->
+                <div class="employees-section">
+                    <h2 class="section-title">GESTION DES BAUX</h2>
+                    <div class="employees-grid">
+                        <a href="baux.html" class="employee-card">
+                            <div class="employee-name">Kyle Miller</div>
+                            <div class="employee-description">
+                                Créez et gérez vos baux immobiliers, soyez rigoureux !
+                            </div>
+                        </a>
+                        
+                        <a href="bauxemp2.html" class="employee-card">
+                            <div class="employee-name">Giacomo Pacini</div>
+                            <div class="employee-description">
+                                Créez et gérez vos baux immobiliers, soyez rigoureux !
+                            </div>
+                        </a>
+                        
+                        <a href="bauxemp3.html" class="employee-card">
+                            <div class="employee-name">Diego Ramirez</div>
+                            <div class="employee-description">
+                                Créez et gérez vos baux immobiliers, soyez rigoureux !
+                            </div>
+                        </a>
+                        
+                        <a href="bauxemp4.html" class="employee-card">
+                            <div class="employee-name">Employé 4</div>
+                            <div class="employee-description">
+                                Créez et gérez vos baux immobiliers, soyez rigoureux !
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <footer>
+                <p>Document interne - Dernière mise à jour: <span id="current-date"></span></p>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('fr-FR');
+    </script>
+</body>
+</html>
