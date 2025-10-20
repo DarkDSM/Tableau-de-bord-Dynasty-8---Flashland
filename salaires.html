@@ -679,12 +679,12 @@
             <div class="summary-box">
                 <h3>Réserve Dynasty</h3>
                 <div class="summary-item">
-                    <span>Montant à conserver:</span>
-                    <span class="money">$200,000</span>
+                    <span>Bénéfice Net:</span>
+                    <span id="netProfitBeforeReserve" class="money">$0</span>
                 </div>
                 <div class="summary-item">
-                    <span>Bénéfice après réserve:</span>
-                    <span id="profitAfterReserve" class="money">$0</span>
+                    <span>Réserve Dynasty (50%):</span>
+                    <span id="dynastyReserve" class="money negative">$0</span>
                 </div>
                 <div class="summary-item total">
                     <span>Montant disponible pour primes:</span>
@@ -1556,15 +1556,20 @@
         }
         
         const netProfit = totalRevenue - taxAmount - totalExpenses - totalSalaries;
-        const profitAfterReserve = Math.max(0, netProfit - 200000);
-        const bonusAmount = profitAfterReserve;
+        
+        // MODIFICATION PRINCIPALE : Calcul de 50% du bénéfice net pour la réserve Dynasty
+        const dynastyReserve = netProfit > 0 ? netProfit * 0.5 : 0;
+        const bonusAmount = netProfit - dynastyReserve;
         
         document.getElementById('summaryGrossRevenue').textContent = `$${totalRevenue.toLocaleString()}`;
         document.getElementById('summaryTaxAmount').textContent = `$${taxAmount.toLocaleString()}`;
         document.getElementById('summaryExpenses').textContent = `$${totalExpenses.toLocaleString()}`;
         document.getElementById('summarySalaries').textContent = `$${totalSalaries.toLocaleString()}`;
         document.getElementById('summaryNetProfit').textContent = `$${netProfit.toLocaleString()}`;
-        document.getElementById('profitAfterReserve').textContent = `$${profitAfterReserve.toLocaleString()}`;
+        
+        // Mise à jour des nouveaux éléments pour la réserve Dynasty
+        document.getElementById('netProfitBeforeReserve').textContent = `$${netProfit.toLocaleString()}`;
+        document.getElementById('dynastyReserve').textContent = `$${dynastyReserve.toLocaleString()}`;
         document.getElementById('bonusAmount').textContent = `$${bonusAmount.toLocaleString()}`;
     }
     
@@ -1596,17 +1601,21 @@
         
         const netProfit = totalRevenue - taxAmount - totalExpenses - totalSalaries;
         
-        if (netProfit < 200000) {
-            alert('Le bénéfice net est inférieur à $200,000. Impossible de distribuer des primes.');
+        if (netProfit <= 0) {
+            alert('Le bénéfice net est négatif ou nul. Impossible de distribuer des primes.');
             return;
         }
         
-        const profitAfterReserve = netProfit - 200000;
-        const bonusAmount = profitAfterReserve;
+        // MODIFICATION : Calcul de 50% du bénéfice net pour la réserve Dynasty
+        const dynastyReserve = netProfit * 0.5;
+        const bonusAmount = netProfit - dynastyReserve;
         
         const totalEmployeeRevenue = weekData.employees.reduce((sum, employee) => sum + employee.weeklyRevenue, 0);
         
         let bonusMessage = `DISTRIBUTION DES PRIMES - ${weekData.weekRange}\n\n`;
+        bonusMessage += `Bénéfice Net: $${netProfit.toLocaleString()}\n`;
+        bonusMessage += `Réserve Dynasty (50%): $${dynastyReserve.toLocaleString()}\n`;
+        bonusMessage += `Montant disponible pour primes: $${bonusAmount.toLocaleString()}\n\n`;
         
         weekData.employees.forEach(employee => {
             const bonus = totalEmployeeRevenue > 0 ? (employee.weeklyRevenue / totalEmployeeRevenue) * bonusAmount : 0;
