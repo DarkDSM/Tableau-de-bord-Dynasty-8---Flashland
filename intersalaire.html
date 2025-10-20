@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intersalaire - Gestion des Salaires</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #f5f7fa;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            margin: 20px auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            position: relative;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .agency-logo {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+            padding: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h2 i {
+            color: var(--secondary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary), #2980b9);
+            color: white;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #27ae60);
+            color: white;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-success:hover {
+            background: #219653;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #e67e22);
+            color: white;
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+        }
+
+        .btn-warning:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #c0392b);
+            color: white;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+            color: white;
+            box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3);
+        }
+
+        .btn-info:hover {
+            background: #138496;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(23, 162, 184, 0.4);
+        }
+
+        .results {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .result-value {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .total-card {
+            background: linear-gradient(to right, var(--primary), #4a6491);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .total-card h2 {
+            color: white;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .total-result {
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        .instructions {
+            background: #e8f4fc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            border-left: 4px solid var(--secondary);
+            margin: 30px;
+        }
+
+        .instructions h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .instructions ul {
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: var(--gray);
+            font-size: 0.9rem;
+            border-top: 1px solid #ecf0f1;
+        }
+
+        /* Sélecteur de date */
+        .date-selector {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .date-selector label {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+
+        .date-selector input {
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .date-info {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+        }
+
+        /* Tableau des salaires */
+        .salary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .salary-table th,
+        .salary-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .salary-table th {
+            background: linear-gradient(135deg, var(--primary), #34495e);
+            color: white;
+            font-weight: bold;
+        }
+
+        .salary-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .salary-table input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .salary-table .total-cell {
+            font-weight: bold;
+            background-color: #f0f8ff;
+        }
+
+        .employee-row {
+            transition: background-color 0.2s;
+        }
+
+        .employee-row:hover {
+            background-color: #f5f9ff;
+        }
+
+        /* Notification */
+        .custom-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #2ecc71;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 10000;
+            font-weight: bold;
+            max-width: 300px;
+        }
+
+        /* Historique des dates */
+        .history-section {
+            margin-top: 25px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .actions {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .date-selector {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .date-selector input {
+                max-width: 100%;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                Retour
+            </a>
+            <div class="agency-logo">💰</div>
+            <h1>Intersalaire - Gestion des Salaires</h1>
+            <p>Suivez et gérez les salaires des employés par date</p>
+        </header>
+
+        <div class="dashboard">
+            <div class="card">
+                <h2><i class="fas fa-money-bill-wave"></i> Gestion des Salaires</h2>
+                
+                <!-- Sélecteur de date -->
+                <div class="date-selector">
+                    <label for="date-select"><i class="fas fa-calendar-day"></i> Sélectionner une date:</label>
+                    <input type="date" id="date-select">
+                </div>
+                <div class="date-info" id="date-info">
+                    <!-- Les informations de la date seront affichées ici -->
+                </div>
+                
+                <!-- Tableau des salaires -->
+                <table class="salary-table">
+                    <thead>
+                        <tr>
+                            <th>Employé</th>
+                            <th>Salaire Minimum ($)</th>
+                            <th>Commissions ($)</th>
+                            <th>Prime d'Activité ($)</th>
+                            <th>Total ($)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="salary-table-body">
+                        <!-- Les lignes seront générées dynamiquement -->
+                    </tbody>
+                </table>
+                
+                <div class="actions">
+                    <button class="btn btn-primary" onclick="enregistrerSalaires()">
+                        <i class="fas fa-save"></i> Enregistrer les salaires
+                    </button>
+                    <button class="btn btn-success" onclick="calculerTotaux()">
+                        <i class="fas fa-calculator"></i> Calculer les totaux
+                    </button>
+                    <button class="btn btn-warning" onclick="reinitialiserFormulaire()">
+                        <i class="fas fa-redo"></i> Nouvelle date
+                    </button>
+                </div>
+            </div>
+
+            <div class="card total-card">
+                <h2><i class="fas fa-chart-bar"></i> Tableau de Bord Global</h2>
+                
+                <div class="result-item">
+                    <span>Total Salaires Minimum:</span>
+                    <span id="total-salaire-min" class="result-value">0 $</span>
+                </div>
+                <div class="result-item">
+                    <span>Total Commissions:</span>
+                    <span id="total-commissions" class="result-value">0 $</span>
+                </div>
+                <div class="result-item">
+                    <span>Total Primes:</span>
+                    <span id="total-primes" class="result-value">0 $</span>
+                </div>
+                <div class="result-item">
+                    <span>Total Général:</span>
+                    <span id="total-general" class="result-value">0 $</span>
+                </div>
+                
+                <div class="total-result" id="performance-indicator">
+                    Performance: En attente de données
+                </div>
+                
+                <div class="history-section">
+                    <h3><i class="fas fa-calendar-alt"></i> Historique par date</h3>
+                    <div id="historique-dates">
+                        <div style="text-align: center; padding: 15px; color: rgba(255,255,255,0.7);">
+                            Aucune donnée disponible
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3><i class="fas fa-info-circle"></i> Instructions d'utilisation</h3>
+            <ul>
+                <li><strong>Sélectionnez une date</strong> - Choisissez une date pour afficher ou modifier les salaires</li>
+                <li>Renseignez les salaires minimum, commissions et primes pour chaque employé</li>
+                <li>Le total est calculé automatiquement pour chaque employé</li>
+                <li>Cliquez sur "Enregistrer les salaires" pour sauvegarder les données</li>
+                <li>Utilisez "Calculer les totaux" pour mettre à jour les statistiques globales</li>
+                <li>Utilisez "Nouvelle date" pour commencer une nouvelle saisie</li>
+                <li><strong>Synchronisation automatique</strong> - Toutes vos données sont automatiquement sauvegardées</li>
+            </ul>
+        </div>
+
+        <footer>
+            <p>Système de Gestion des Salaires - Intersalaire</p>
+            <p>Dernière mise à jour: <span id="current-date"></span></p>
+        </footer>
+    </div>
+
+    <script>
+        // Stockage des données
+        let salairesData = {};
+        let dateSelectionnee = null;
+        let employes = ["Kyle Miller", "Employé 2", "Employé 3"];
+
+        // ====================================================================
+        // FONCTIONS POUR LA SAUVEGARDE DES DONNÉES
+        // ====================================================================
+
+        // SAUVEGARDER dans le localStorage
+        async function sauvegarderDonnees() {
+            try {
+                localStorage.setItem('salairesData', JSON.stringify(salairesData));
+                console.log("✅ Données sauvegardées :", salairesData);
+                showNotification("✅ Données sauvegardées avec succès !");
+                return true;
+            } catch (error) {
+                console.error("❌ Erreur lors de la sauvegarde :", error);
+                showNotification("❌ Erreur lors de la sauvegarde");
+                return false;
+            }
+        }
+
+        // CHARGER depuis le localStorage
+        async function chargerDonnees() {
+            try {
+                const donneesSauvegardees = localStorage.getItem('salairesData');
+                if (donneesSauvegardees) {
+                    salairesData = JSON.parse(donneesSauvegardees);
+                    console.log("✅ Données chargées :", salairesData);
+                    showNotification("✅ Données chargées avec succès !");
+                } else {
+                    console.log("ℹ️ Aucune donnée sauvegardée trouvée");
+                    salairesData = {};
+                }
+                return true;
+            } catch (error) {
+                console.error("❌ Erreur lors du chargement :", error);
+                showNotification("❌ Erreur lors du chargement des données");
+                salairesData = {};
+                return false;
+            }
+        }
+
+        // Notification stylée
+        function showNotification(message) {
+            document.querySelectorAll('.custom-notification').forEach(n => n.remove());
+            
+            const notification = document.createElement('div');
+            notification.className = 'custom-notification';
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${message.includes('✅') ? '#2ecc71' : 
+                            message.includes('❌') ? '#e74c3c' : 
+                            message.includes('⚠️') ? '#f39c12' : 
+                            message.includes('📊') ? '#3498db' : 
+                            message.includes('🔄') ? '#9b59b6' : '#3498db'};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                z-index: 10000;
+                font-weight: bold;
+                max-width: 300px;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // ====================================================================
+        // FONCTIONS POUR LA GESTION DES SALAIRES
+        // ====================================================================
+
+        // Formater une date en français
+        function formaterDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('fr-FR', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        // Obtenir la semaine à partir d'une date
+        function obtenirSemaine(date) {
+            const dateObj = new Date(date);
+            const premierJourAnnee = new Date(dateObj.getFullYear(), 0, 1);
+            const joursEcoules = Math.floor((dateObj - premierJourAnnee) / (24 * 60 * 60 * 1000));
+            return Math.ceil((joursEcoules + premierJourAnnee.getDay() + 1) / 7);
+        }
+
+        // Mettre à jour les informations de la date
+        function mettreAJourInfoDate() {
+            const infoElement = document.getElementById('date-info');
+            
+            if (!dateSelectionnee) {
+                infoElement.textContent = 'Aucune date sélectionnée';
+                return;
+            }
+            
+            const semaine = obtenirSemaine(dateSelectionnee);
+            infoElement.textContent = `${formaterDate(dateSelectionnee)} - Semaine ${semaine}`;
+        }
+
+        // Afficher le tableau des salaires
+        function afficherTableauSalaires() {
+            const tbody = document.getElementById('salary-table-body');
+            tbody.innerHTML = '';
+            
+            // Récupérer les données de la date sélectionnée
+            const salairesDate = salairesData[dateSelectionnee] || {};
+            
+            let totalSalaireMin = 0;
+            let totalCommissions = 0;
+            let totalPrimes = 0;
+            let totalGeneral = 0;
+            
+            employes.forEach(employe => {
+                const salaireMin = salairesDate[employe]?.salaireMin || 0;
+                const commissions = salairesDate[employe]?.commissions || 0;
+                const prime = salairesDate[employe]?.prime || 0;
+                const total = salaireMin + commissions + prime;
+                
+                totalSalaireMin += salaireMin;
+                totalCommissions += commissions;
+                totalPrimes += prime;
+                totalGeneral += total;
+                
+                const row = document.createElement('tr');
+                row.className = 'employee-row';
+                row.innerHTML = `
+                    <td>${employe}</td>
+                    <td>
+                        <input type="number" min="0" step="0.01" 
+                               value="${salaireMin}" 
+                               onchange="mettreAJourSalaire('${employe}', 'salaireMin', this.value)"
+                               placeholder="0.00">
+                    </td>
+                    <td>
+                        <input type="number" min="0" step="0.01" 
+                               value="${commissions}" 
+                               onchange="mettreAJourSalaire('${employe}', 'commissions', this.value)"
+                               placeholder="0.00">
+                    </td>
+                    <td>
+                        <input type="number" min="0" step="0.01" 
+                               value="${prime}" 
+                               onchange="mettreAJourSalaire('${employe}', 'prime', this.value)"
+                               placeholder="0.00">
+                    </td>
+                    <td class="total-cell">${total.toFixed(2)} $</td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Ajouter la ligne de total
+            const totalRow = document.createElement('tr');
+            totalRow.className = 'employee-row total-cell';
+            totalRow.innerHTML = `
+                <td><strong>Total</strong></td>
+                <td><strong>${totalSalaireMin.toFixed(2)} $</strong></td>
+                <td><strong>${totalCommissions.toFixed(2)} $</strong></td>
+                <td><strong>${totalPrimes.toFixed(2)} $</strong></td>
+                <td><strong>${totalGeneral.toFixed(2)} $</strong></td>
+            `;
+            tbody.appendChild(totalRow);
+            
+            // Mettre à jour les totaux affichés
+            document.getElementById('total-salaire-min').textContent = totalSalaireMin.toFixed(2) + ' $';
+            document.getElementById('total-commissions').textContent = totalCommissions.toFixed(2) + ' $';
+            document.getElementById('total-primes').textContent = totalPrimes.toFixed(2) + ' $';
+            document.getElementById('total-general').textContent = totalGeneral.toFixed(2) + ' $';
+            
+            // Indicateur de performance
+            const performanceIndicator = document.getElementById('performance-indicator');
+            if (totalGeneral === 0) {
+                performanceIndicator.textContent = "Performance: En attente de données";
+                performanceIndicator.style.color = "#95a5a6";
+            } else if (totalCommissions / totalGeneral > 0.3) {
+                performanceIndicator.textContent = "Performance: Excellente";
+                performanceIndicator.style.color = "#2ecc71";
+            } else if (totalCommissions / totalGeneral > 0.2) {
+                performanceIndicator.textContent = "Performance: Bonne";
+                performanceIndicator.style.color = "#f39c12";
+            } else {
+                performanceIndicator.textContent = "Performance: À améliorer";
+                performanceIndicator.style.color = "#e74c3c";
+            }
+        }
+
+        // Mettre à jour un salaire
+        function mettreAJourSalaire(employe, type, valeur) {
+            if (!dateSelectionnee) return;
+            
+            // Initialiser la date si elle n'existe pas
+            if (!salairesData[dateSelectionnee]) {
+                salairesData[dateSelectionnee] = {};
+            }
+            
+            // Initialiser l'employé si il n'existe pas
+            if (!salairesData[dateSelectionnee][employe]) {
+                salairesData[dateSelectionnee][employe] = {
+                    salaireMin: 0,
+                    commissions: 0,
+                    prime: 0
+                };
+            }
+            
+            // Mettre à jour la valeur
+            salairesData[dateSelectionnee][employe][type] = parseFloat(valeur) || 0;
+            
+            // Recalculer les totaux
+            afficherTableauSalaires();
+            
+            // Sauvegarder automatiquement
+            sauvegarderDonnees();
+        }
+
+        // Enregistrer les salaires
+        async function enregistrerSalaires() {
+            if (!dateSelectionnee) {
+                alert('Veuillez sélectionner une date');
+                return;
+            }
+
+            // Sauvegarder les données
+            const sauvegardeReussie = await sauvegarderDonnees();
+            if (sauvegardeReussie) {
+                afficherHistoriqueDates();
+            }
+        }
+
+        // Calculer les totaux
+        function calculerTotaux() {
+            afficherTableauSalaires();
+            afficherHistoriqueDates();
+            showNotification('📊 Totaux calculés avec succès !');
+        }
+
+        // Réinitialiser le formulaire
+        function reinitialiserFormulaire() {
+            // Utiliser la date d'aujourd'hui
+            dateSelectionnee = new Date().toISOString().split('T')[0];
+            document.getElementById('date-select').value = dateSelectionnee;
+            mettreAJourInfoDate();
+            afficherTableauSalaires();
+            
+            showNotification('🔄 Nouvelle date créée !');
+        }
+
+        // Afficher l'historique des dates
+        function afficherHistoriqueDates() {
+            const element = document.getElementById('historique-dates');
+            
+            if (Object.keys(salairesData).length === 0) {
+                element.innerHTML = '<div style="text-align: center; padding: 15px; color: rgba(255,255,255,0.7);">Aucune donnée disponible</div>';
+                return;
+            }
+            
+            let html = '';
+            Object.keys(salairesData)
+                .sort((a, b) => b.localeCompare(a)) // Trier par date décroissante
+                .forEach(dateKey => {
+                    const salairesDate = salairesData[dateKey];
+                    
+                    let totalDate = 0;
+                    Object.values(salairesDate).forEach(employe => {
+                        totalDate += (employe.salaireMin || 0) + (employe.commissions || 0) + (employe.prime || 0);
+                    });
+                    
+                    const semaine = obtenirSemaine(dateKey);
+                    html += `
+                        <div class="history-item">
+                            <span>${formaterDate(dateKey)} (S${semaine})</span>
+                            <span style="font-weight: bold;">${totalDate.toFixed(2)} $</span>
+                        </div>
+                    `;
+                });
+            
+            element.innerHTML = html;
+        }
+
+        // Initialisation des écouteurs d'événements
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Charger les données sauvegardées
+            await chargerDonnees();
+
+            // Définir la date d'aujourd'hui par défaut
+            const today = new Date().toISOString().split('T')[0];
+            dateSelectionnee = today;
+            document.getElementById('date-select').value = today;
+
+            // Mettre à jour les informations
+            mettreAJourInfoDate();
+            afficherTableauSalaires();
+            afficherHistoriqueDates();
+
+            // Mettre à jour la date actuelle
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString('fr-FR');
+
+            // Écouteur pour le sélecteur de date
+            document.getElementById('date-select').addEventListener('change', function() {
+                dateSelectionnee = this.value;
+                mettreAJourInfoDate();
+                afficherTableauSalaires();
+            });
+
+            // Sauvegarder automatiquement toutes les 30 secondes
+            setInterval(sauvegarderDonnees, 30000);
+        });
+    </script>
+</body>
+</html>
