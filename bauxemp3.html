@@ -638,7 +638,7 @@
 
         <div class="dashboard">
             <div class="card">
-                <h2><i class="fas fa-file-contract"></i> Saisie des Baux - Diego Ramirez</h2>
+                <h2><i class="fas fa-file-contract"></i> Saisie des Baux - A venir</h2>
                 
                 <div id="employe3" class="tab-content active">
                     <div class="form-grid">
@@ -725,7 +725,7 @@
                     </div>
                     
                     <div class="results">
-                        <h3>Résultats de Diego Ramirez</h3>
+                        <h3>Résultats de A venir</h3>
                         <div class="result-item">
                             <span>Chiffre d'Affaires:</span>
                             <span id="ca-result3" class="result-value ca-value">0 $</span>
@@ -1231,15 +1231,15 @@
                         <h3>Informations financières</h3>
                         <div class="preview-row">
                             <span class="preview-label">Chiffre d'Affaires:</span>
-                            <span class="preview-value">${bail.ca.toFixed(2)} $</span>
+                            <span class="preview-value">${bail.ca.toFixed(3)} $</span>
                         </div>
                         <div class="preview-row">
                             <span class="preview-label">Réduction:</span>
-                            <span class="preview-value">${bail.reductionPourcentage.toFixed(1)}% (${bail.reductionMontant.toFixed(2)} $)</span>
+                            <span class="preview-value">${bail.reductionPourcentage.toFixed(1)}% (${bail.reductionMontant.toFixed(3)} $)</span>
                         </div>
                         <div class="preview-row">
                             <span class="preview-label">Bénéfice:</span>
-                            <span class="preview-value">${bail.benefice.toFixed(2)} $</span>
+                            <span class="preview-value">${bail.benefice.toFixed(3)} $</span>
                         </div>
                     </div>
                 `;
@@ -1460,7 +1460,7 @@
                         <td>${bail.client}</td>
                         <td>${bail.rue}</td>
                         <td>${bail.garages}</td>
-                        <td>${bail.ca.toFixed(2)} $</td>
+                        <td>${bail.ca.toFixed(3)} $</td>
                         <td><span class="badge ${badgeClass}">${bail.statut}</span></td>
                         <td>
                             <div class="action-buttons">
@@ -1515,9 +1515,9 @@
             const benefice = ca - reductionMontant;
             
             // Mise à jour des résultats
-            document.getElementById(`ca-result${employeNum}`).textContent = ca.toFixed(2) + ' $';
-            document.getElementById(`reduction-result${employeNum}`).textContent = reductionMontant.toFixed(2) + ' $ (' + reductionPourcentage.toFixed(1) + '%)';
-            document.getElementById(`benefice${employeNum}`).textContent = benefice.toFixed(2) + ' $';
+            document.getElementById(`ca-result${employeNum}`).textContent = ca.toFixed(3) + ' $';
+            document.getElementById(`reduction-result${employeNum}`).textContent = reductionMontant.toFixed(3) + ' $ (' + reductionPourcentage.toFixed(1) + '%)';
+            document.getElementById(`benefice${employeNum}`).textContent = benefice.toFixed(3) + ' $';
             
             // Mise à jour du statut
             const resilie = document.getElementById(`resilie${employeNum}`).checked;
@@ -1560,9 +1560,9 @@
             });
             
             // Mise à jour des totaux affichés
-            document.getElementById('total-ca').textContent = totalCA.toFixed(2) + ' $';
-            document.getElementById('total-reduction').textContent = totalReduction.toFixed(2) + ' $';
-            document.getElementById('total-benefice').textContent = totalBenefice.toFixed(2) + ' $';
+            document.getElementById('total-ca').textContent = totalCA.toFixed(3) + ' $';
+            document.getElementById('total-reduction').textContent = totalReduction.toFixed(3) + ' $';
+            document.getElementById('total-benefice').textContent = totalBenefice.toFixed(3) + ' $';
             document.getElementById('baux-valides').textContent = bauxValides;
             document.getElementById('baux-resilies').textContent = bauxResilies;
             document.getElementById('total-baux').textContent = totalBaux;
