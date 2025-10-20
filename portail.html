@@ -763,52 +763,30 @@
         let semaineSelectionnee = null;
 
         // ====================================================================
-        // FONCTIONS POUR L'API (SYSTÈME DE SAUVEGARDE CLOUD)
+        // FONCTIONS DE SAUVEGARDE SIMPLIFIÉES (LOCALSTORAGE)
         // ====================================================================
 
-        // SAUVEGARDER sur le serveur (API)
-        async function sauvegarderDonnees() {
+        // Sauvegarder les données
+        function sauvegarderDonnees() {
             try {
-                const donneesPourSauvegarde = {
-                    demandesData: demandesData
-                };
-
-                const response = await fetch('/api/serrures', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(donneesPourSauvegarde)
-                });
-                
-                if (response.ok) {
-                    console.log('✅ Données sauvegardées sur le serveur');
-                    showNotification('✅ Données sauvegardées !');
-                    return true;
-                } else {
-                    throw new Error('Erreur serveur');
-                }
+                localStorage.setItem('serrures_demandesData', JSON.stringify(demandesData));
+                console.log('✅ Données sauvegardées localement');
+                showNotification('✅ Données sauvegardées !');
+                return true;
             } catch (error) {
-                console.error('❌ Erreur sauvegarde API:', error);
-                // Fallback: sauvegarde locale
-                sauvegarderLocalement();
-                showNotification('⚠️ Mode hors ligne - données locales sauvegardées');
+                console.error('❌ Erreur sauvegarde:', error);
+                showNotification('❌ Erreur de sauvegarde');
                 return false;
             }
         }
 
-        // CHARGER depuis le serveur (API)
-        async function chargerDonnees() {
+        // Charger les données
+        function chargerDonnees() {
             try {
-                const response = await fetch('/api/serrures');
-                if (!response.ok) {
-                    throw new Error('Erreur serveur');
-                }
-                
-                const donneesServeur = await response.json();
-                if (donneesServeur && donneesServeur.demandesData) {
-                    demandesData = donneesServeur.demandesData;
-                    console.log('✅ Données chargées depuis le serveur');
+                const donneesSauvegardes = localStorage.getItem('serrures_demandesData');
+                if (donneesSauvegardes) {
+                    demandesData = JSON.parse(donneesSauvegardes);
+                    console.log('✅ Données chargées:', demandesData.employe2.length, 'demandes');
                     
                     // Mettre à jour l'affichage
                     afficherHistorique(2);
@@ -819,51 +797,23 @@
                     // Mettre à jour les options de semaine
                     genererOptionsSemaine();
                     
-                    showNotification('✅ Données à jour');
+                    showNotification('✅ Données chargées (' + demandesData.employe2.length + ' demandes)');
                     return true;
-                }
-            } catch (error) {
-                console.error('❌ Erreur chargement API:', error);
-                // Fallback: charger depuis le stockage local
-                if (chargerLocalement()) {
-                    showNotification('⚠️ Mode hors ligne - données locales chargées');
                 } else {
+                    console.log('ℹ️ Aucune donnée trouvée');
                     showNotification('ℹ️ Aucune donnée trouvée - commencez par créer une demande');
+                    return false;
                 }
-            }
-            return false;
-        }
-
-        // Sauvegarde locale de secours
-        function sauvegarderLocalement() {
-            try {
-                localStorage.setItem('demandesData', JSON.stringify(demandesData));
-                console.log('📱 Données sauvegardées localement');
-                return true;
             } catch (error) {
-                console.error('❌ Erreur sauvegarde locale:', error);
-                return false;
-            }
-        }
-
-        // Chargement local de secours
-        function chargerLocalement() {
-            try {
-                const demandesSauvegardes = localStorage.getItem('demandesData');
-                if (demandesSauvegardes) {
-                    demandesData = JSON.parse(demandesSauvegardes);
-                }
-                
-                console.log('📱 Données chargées localement');
-                return true;
-            } catch (error) {
-                console.error('❌ Erreur chargement local:', error);
+                console.error('❌ Erreur chargement:', error);
+                showNotification('❌ Erreur de chargement des données');
                 return false;
             }
         }
 
         // Notification stylée
         function showNotification(message) {
+            // Supprimer les notifications existantes
             document.querySelectorAll('.custom-notification').forEach(n => n.remove());
             
             const notification = document.createElement('div');
@@ -875,7 +825,7 @@
                 background: ${message.includes('✅') ? '#2ecc71' : 
                             message.includes('❌') ? '#e74c3c' : 
                             message.includes('⚠️') ? '#f39c12' : 
-                            message.includes('📤') ? '#3498db' : '#3498db'};
+                            message.includes('ℹ️') ? '#3498db' : '#3498db'};
                 color: white;
                 padding: 15px 20px;
                 border-radius: 8px;
@@ -883,17 +833,29 @@
                 z-index: 10000;
                 font-weight: bold;
                 max-width: 300px;
+                transition: all 0.3s ease;
             `;
             notification.textContent = message;
             document.body.appendChild(notification);
             
+            // Animation d'entrée
             setTimeout(() => {
-                notification.remove();
+                notification.style.transform = 'translateX(0)';
+            }, 10);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100px)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.remove();
+                    }
+                }, 300);
             }, 3000);
         }
 
         // ====================================================================
-        // NOUVELLE SOLUTION SIMPLE POUR LES SEMAINES (DIMANCHE-SAMEDI)
+        // GESTION DES SEMAINES (DIMANCHE-SAMEDI)
         // ====================================================================
 
         // Définition manuelle des semaines pour 2025 (dimanche-samedi)
@@ -927,37 +889,7 @@
                 }
             }
             
-            // Si pas trouvé, créer une nouvelle semaine automatiquement
-            return creerNouvelleSemaine(dateObj);
-        }
-
-        // Créer une nouvelle semaine automatiquement
-        function creerNouvelleSemaine(date) {
-            // Trouver la dernière semaine existante
-            const dernierNumero = Math.max(...semaines2025.map(s => s.numero));
-            const derniereSemaine = semaines2025.find(s => s.numero === dernierNumero);
-            
-            if (!derniereSemaine) return null;
-            
-            // Calculer la nouvelle semaine (7 jours après la fin de la dernière)
-            const finDerniere = new Date(derniereSemaine.fin);
-            const nouveauDebut = new Date(finDerniere);
-            nouveauDebut.setDate(finDerniere.getDate() + 1); // Jour suivant
-            
-            const nouvelleFin = new Date(nouveauDebut);
-            nouvelleFin.setDate(nouveauDebut.getDate() + 6); // +6 jours pour samedi
-            
-            const nouvelleSemaine = {
-                numero: dernierNumero + 1,
-                debut: nouveauDebut.toISOString().split('T')[0],
-                fin: nouvelleFin.toISOString().split('T')[0],
-                nom: `Semaine ${dernierNumero + 1} (${nouveauDebut.toLocaleDateString('fr-FR')} dim - ${nouvelleFin.toLocaleDateString('fr-FR')} sam)`
-            };
-            
-            semaines2025.push(nouvelleSemaine);
-            console.log('Nouvelle semaine créée:', nouvelleSemaine);
-            
-            return nouvelleSemaine;
+            return null;
         }
 
         // Générer les options de semaine
@@ -1006,9 +938,11 @@
             if (semainesAffichees.length > 0) {
                 semaineSelectionnee = `2025-${semainesAffichees[0].numero}`;
                 select.value = semaineSelectionnee;
+            } else {
+                semaineSelectionnee = 'all';
             }
             
-            console.log('Semaines affichées:', semainesAffichees);
+            mettreAJourInfoSemaine();
         }
 
         // Filtrer les demandes par semaine sélectionnée
@@ -1040,12 +974,6 @@
             demandesFiltrees[employeKey] = demandesData[employeKey].filter(demande => {
                 const dateDemande = new Date(demande.date);
                 return dateDemande >= debut && dateDemande <= fin;
-            });
-            
-            console.log(`Filtrage semaine ${semaineNumero}:`, {
-                debut: debut.toLocaleDateString('fr-FR'),
-                fin: fin.toLocaleDateString('fr-FR'),
-                demandesTrouvees: demandesFiltrees[employeKey].length
             });
             
             return demandesFiltrees;
@@ -1148,7 +1076,7 @@
         }
 
         // Fonction pour enregistrer ou mettre à jour une demande
-        async function enregistrerDemande(employeNum) {
+        function enregistrerDemande(employeNum) {
             const employeKey = `employe${employeNum}`;
             const formElements = {
                 date: document.getElementById(`date${employeNum}`),
@@ -1164,7 +1092,7 @@
             
             // Validation des champs obligatoires
             if (!date || !demandeur) {
-                alert('Veuillez remplir tous les champs obligatoires');
+                alert('Veuillez remplir tous les champs obligatoires (Date et Demandeur)');
                 return;
             }
 
@@ -1186,7 +1114,7 @@
                         statut: valide ? 'Validé' : 'En cours'
                     };
                     
-                    alert('Demande mise à jour avec succès !');
+                    showNotification('✅ Demande mise à jour avec succès !');
                 }
                 
             } else {
@@ -1203,24 +1131,20 @@
                 
                 // Ajout au tableau des demandes
                 demandesData[employeKey].push(demande);
-
-                alert('Demande enregistrée avec succès !');
+                showNotification('✅ Demande enregistrée avec succès !');
             }
             
             // Mise à jour de l'historique
             afficherHistorique(employeNum);
             
-            // Mise à jour des options de semaine (IMPORTANT: après l'ajout de la demande)
+            // Mise à jour des options de semaine
             genererOptionsSemaine();
             
             // Mise à jour des totaux
             calculerTotaux();
             
-            // Sauvegarder les données via l'API
-            const sauvegardeReussie = await sauvegarderDonnees();
-            if (sauvegardeReussie) {
-                // Ne rien faire de plus, le message de succès est déjà affiché dans sauvegarderDonnees()
-            }
+            // Sauvegarder les données
+            sauvegarderDonnees();
             
             // Réinitialisation du formulaire pour une nouvelle entrée
             reinitialiserFormulaire(employeNum);
@@ -1251,11 +1175,13 @@
                 document.querySelector(`#employe${employeNum} .form-grid`).scrollIntoView({
                     behavior: 'smooth'
                 });
+                
+                showNotification('📝 Mode édition activé - Modifiez la demande');
             }
         }
 
         // Fonction pour supprimer une demande
-        async function supprimerDemande(employeNum, demandeId) {
+        function supprimerDemande(employeNum, demandeId) {
             if (confirm('Êtes-vous sûr de vouloir supprimer cette demande ?')) {
                 const employeKey = `employe${employeNum}`;
                 demandesData[employeKey] = demandesData[employeKey].filter(d => d.id !== demandeId);
@@ -1270,9 +1196,9 @@
                 calculerTotaux();
                 
                 // Sauvegarder les données
-                await sauvegarderDonnees();
+                sauvegarderDonnees();
                 
-                alert('Demande supprimée avec succès !');
+                showNotification('🗑️ Demande supprimée avec succès !');
             }
         }
 
@@ -1287,6 +1213,9 @@
                 return;
             }
             
+            // Trier les demandes par date (plus récent en premier)
+            const demandesTriees = [...demandes].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
             let html = `
                 <table class="history-table">
                     <thead>
@@ -1300,7 +1229,7 @@
                     <tbody>
             `;
             
-            demandes.forEach(demande => {
+            demandesTriees.forEach(demande => {
                 const badgeClass = demande.statut === 'Validé' ? 'success' : 'warning';
                 
                 html += `
@@ -1332,7 +1261,7 @@
         // Fonction pour réinitialiser le formulaire
         function reinitialiserFormulaire(employeNum) {
             const today = new Date().toISOString().split('T')[0];
-            document.getElementById(`date${employeNum}`).value = today; // Réinitialiser à la date du jour
+            document.getElementById(`date${employeNum}`).value = today;
             document.getElementById(`demandeur${employeNum}`).value = '';
             document.getElementById(`description${employeNum}`).value = '';
             document.getElementById(`valide${employeNum}`).checked = false;
@@ -1354,13 +1283,11 @@
             let totalDemandes = 0;
             let demandesValidees = 0;
             let demandesCours = 0;
-            let totalDemandesCreees = 0;
             
             // Calcul des totaux par employé
             const employeKey = 'employe2';
             demandesFiltrees[employeKey].forEach(demande => {
                 totalDemandes++;
-                totalDemandesCreees++;
                 
                 if (demande.valide) {
                     demandesValidees++;
@@ -1373,7 +1300,7 @@
             document.getElementById('total-demandes').textContent = totalDemandes;
             document.getElementById('demandes-validees').textContent = demandesValidees;
             document.getElementById('demandes-cours').textContent = demandesCours;
-            document.getElementById('total-demandes-creees').textContent = totalDemandesCreees;
+            document.getElementById('total-demandes-creees').textContent = demandesData.employe2.length;
             
             // Calcul des demandes par jour
             afficherDemandesParJour();
@@ -1382,7 +1309,7 @@
             const performanceIndicator = document.getElementById('performance-indicator');
             if (totalDemandes === 0) {
                 performanceIndicator.textContent = "Performance: En attente de données";
-                performanceIndicator.style.color = "white"; // Couleur par défaut dans le card total
+                performanceIndicator.style.color = "white";
             } else if (demandesValidees / totalDemandes > 0.8) {
                 performanceIndicator.textContent = "Performance: Excellente";
                 performanceIndicator.style.color = "#2ecc71";
@@ -1417,11 +1344,12 @@
             }
             
             let html = '';
-            Object.keys(demandesParJour).sort().forEach(date => {
+            // Trier les dates
+            Object.keys(demandesParJour).sort().reverse().forEach(date => {
                 html += `
                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 8px; background: rgba(255,255,255,0.1); border-radius: 5px;">
                         <span>${formaterDate(date)}</span>
-                        <span style="font-weight: bold;">${demandesParJour[date]} demandes</span>
+                        <span style="font-weight: bold;">${demandesParJour[date]} demande(s)</span>
                     </div>
                 `;
             });
@@ -1430,9 +1358,9 @@
         }
 
         // Initialisation des écouteurs d'événements
-        document.addEventListener('DOMContentLoaded', async function() {
-            // Charger les données sauvegardées via l'API
-            await chargerDonnees();
+        document.addEventListener('DOMContentLoaded', function() {
+            // Charger les données sauvegardées
+            chargerDonnees();
             
             // Définir la date d'aujourd'hui par défaut
             const today = new Date().toISOString().split('T')[0];
@@ -1452,7 +1380,7 @@
                 }
             });
             
-            // NOUVEAU: Écouteur pour le sélecteur de semaine
+            // Écouteur pour le sélecteur de semaine
             document.getElementById('week-select').addEventListener('change', function() {
                 semaineSelectionnee = this.value;
                 mettreAJourInfoSemaine();
@@ -1461,17 +1389,17 @@
             
             // Initialiser les options de semaine
             genererOptionsSemaine();
-            mettreAJourInfoSemaine();
             
             // Initialiser les totaux et l'historique
             calculerTotaux();
-            afficherHistorique(2); // Afficher l'historique au chargement
             
             // Mettre à jour la date actuelle
             document.getElementById('current-date').textContent = new Date().toLocaleDateString('fr-FR');
             
             // Sauvegarder automatiquement toutes les 30 secondes
             setInterval(sauvegarderDonnees, 30000);
+            
+            console.log('✅ Application initialisée avec succès');
         });
     </script>
 </body>
